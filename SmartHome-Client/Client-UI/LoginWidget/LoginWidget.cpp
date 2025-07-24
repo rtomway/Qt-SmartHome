@@ -46,6 +46,8 @@ void LoginWidget::init()
 	ui->forgetPasBtn->setText("忘记密码");
 	ui->exitBtn->setIcon(QIcon(":/icon/Resource/Icon/x.png"));
 
+	ui->passwordEdit->setEchoMode(QLineEdit::Password);
+
 	//个人信息配置
 	SConfigFile config("config.ini");
 	QFile configFile("config.ini");
