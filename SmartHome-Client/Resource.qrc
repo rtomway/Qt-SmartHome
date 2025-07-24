@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/picture">
+        <file>Resource/Picture/login.png</file>
+    </qresource>
+    <qresource prefix="/stylesheet">
+        <file>Resource/StyleSheet/LoginWidget.css</file>
+        <file>Resource/StyleSheet/MainWidget.css</file>
+        <file>Resource/StyleSheet/RegisterPage.css</file>
+        <file>Resource/StyleSheet/PasswordChangePage.css</file>
+    </qresource>
+    <qresource prefix="/icon">
+        <file>Resource/Icon/x.png</file>
+    </qresource>
+</RCC>

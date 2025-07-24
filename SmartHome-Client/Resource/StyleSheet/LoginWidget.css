@@ -1,0 +1,82 @@
+﻿
+QWidget#login {
+    border: none;
+    border-radius: 10px;
+    border-image: url(":/picture/Resource/Picture/login.png");
+    color:black;
+}
+
+QPushButton#loginBtn {
+    border: 1px solid gray;
+    border-radius: 4px;
+    height: 35px;
+    width:220px;
+    font-size: 14px;
+}
+
+QPushButton#loginBtn:hover {
+    background-color: rgb(224, 221, 221);
+}
+
+QPushButton#registerBtn {
+    border: 1px solid gray;
+    border-radius: 4px;
+    height: 35px;
+    width: 220px;
+    font-size: 14px;
+}
+
+QPushButton#registerBtn:hover {
+    background-color: rgb(224, 221, 221);
+}
+
+QPushButton#forgetPasBtn {
+    background-color:transparent;
+}
+
+QPushButton#forgetPasBtn:hover {
+   font-size:14px;
+}
+QPushButton#exitBtn {
+   background-color: transparent;
+}
+
+QPushButton#exitBtn:hover {
+    background-color: red;
+}
+
+QLineEdit {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #808080; 
+    padding: 5px;
+}
+QLineEdit:hover {
+    border-bottom: 2px solid #545454;
+}
+
+QLineEdit:focus {
+    border-bottom: 2px solid #545454;
+}
+
+QLabel {
+    font-size: 14px;
+    color: #333;
+}
+
+QLabel:hover {
+    font-size: 16px;
+    color: #000;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
