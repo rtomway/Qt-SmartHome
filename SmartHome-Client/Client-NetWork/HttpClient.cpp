@@ -28,7 +28,7 @@ void HttpClient::sendRequest(const QString& type, const QByteArray& data, const 
 		QString authHeader = "Bearer " + token;
 		request.setRawHeader("Authorization", authHeader.toUtf8());
 	}
-	auto& user_id = LoginUserManager::instance()->getLoginUserID();
+	auto& user_id = LoginUserManager::instance()->get_loginUser_id();
 	request.setRawHeader("user_id", user_id.toUtf8());
 
 

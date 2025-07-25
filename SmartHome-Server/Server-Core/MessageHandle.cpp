@@ -28,6 +28,7 @@ void MessageHandle::initWebRequestHash()
 void MessageHandle::initHttpRequestHash()
 {
 	httpRequestHash["loginValidation"] = LoginHandle::handle_loginValidation;
+	httpRequestHash["updateUserAvatar"] = UserHandle::handle_updateUserAvatar;
 }
 
 //无需token验证

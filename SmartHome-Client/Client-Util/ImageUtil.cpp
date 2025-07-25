@@ -33,6 +33,28 @@ QPixmap ImageUtils::roundedPixmap(const QPixmap& pixmap, QSize size)
 	return roundedPixmap(pixmap, size, radius);
 }
 
+//获取用户头像
+void ImageUtils::getUserAvatar(const QString& user_id,std::function<void(QPixmap)>callBack)
+{
+	QString avatarFolderPath = getUserAvatarFolderPath();
+	// 使用用户 ID 来命名头像文件
+	QString avatarPath = QDir(avatarFolderPath).filePath(user_id + ".png");
+	// 加载新的头像并缓存
+	ImageUtils::loadAvatarFromFile(avatarPath, [=](QImage image)
+		{
+			QPixmap avatar;
+			if (!image.isNull())
+			{
+				avatar = QPixmap::fromImage(image);
+			}
+			else
+			{
+				avatar = QPixmap(":/picture/Resource/Picture/user_defalut.png");
+			}
+			callBack(avatar);
+		});
+}
+
 void ImageUtils::setLoginUser(const QString& user_id)
 {
 	m_currentUser = user_id;

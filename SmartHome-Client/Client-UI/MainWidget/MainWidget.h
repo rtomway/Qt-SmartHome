@@ -12,6 +12,13 @@
 
 namespace Ui { class MainWidget; }
 
+enum PageBtn
+{
+	HOMEPAGE,
+	DEVICEPAGE,
+	ROOMPAGE
+};
+
 class MainWidget :public AngleRoundedWidget
 {
 	Q_OBJECT
@@ -20,8 +27,17 @@ public:
 	~MainWidget();
 private:
 	void init();
+	void onLoadData(const QJsonObject&obj);
+	void changeAvatar();
 private:
 	Ui::MainWidget* ui;
+	QString m_user_id;
+	QButtonGroup* m_pageBtnGroup{};
+	QString m_newAvatarPath;
+	QString m_oldAvatarPath;
+	bool m_avatarIsChanged = false;
+protected:
+	bool eventFilter(QObject* watched, QEvent* event)override;
 signals:
 	void quitSuccess();
 	void hideWidget();

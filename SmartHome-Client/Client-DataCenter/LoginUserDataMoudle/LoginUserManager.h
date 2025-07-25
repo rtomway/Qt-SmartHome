@@ -3,7 +3,6 @@
 
 #include <QJsonObject>
 #include <QObject>
-#include <QSharedPointer>
 
 class LoginUserManager : public QObject
 {
@@ -16,17 +15,17 @@ private:
 	LoginUserManager& operator=(const LoginUserManager&) = delete;
 public:
 	//当前登录用户
-	void initLoginUser(const QJsonObject& loginUserObj);
-	const QString& getLoginUserID()const;
-	const QString& getLoginUserName()const;
+	void onInitLoginUser(const QJsonObject& loginUserObj);
+	const QString& get_loginUser_id()const;
+	const QString& get_loginUser_name()const;
 	//清除
 	void clearLoginUserManager();
 private:
 	//当前登录用户
-	QString m_loginUserId{};
-	QString m_loginUserName{};
+	QString m_loginUser_id;
+	QString m_loginUser_name;
 signals:
-	void loginUserLoadSuccess();
+	void loginUserLoadSuccess(const QJsonObject& loginUserObj);
 };
 
 

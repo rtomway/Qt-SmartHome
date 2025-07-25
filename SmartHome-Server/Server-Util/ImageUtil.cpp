@@ -35,9 +35,9 @@ QString ImageUtils::getGroupAvatarFolderPath()
 }
 
 //保存图片
-void ImageUtils::saveAvatarToLocal(const QString& avatarPath, const QString& id, ChatType type, std::function<void()>callBack)
+void ImageUtils::saveAvatarToLocal(const QString& avatarPath, const QString& id, std::function<void()>callBack)
 {
-	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QString&, const QString&, ChatType)>(&ImageUtils::saveAvatarToLocalTask), avatarPath, id, type);
+	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QString&, const QString&)>(&ImageUtils::saveAvatarToLocalTask), avatarPath, id);
 	// 创建 QFutureWatcher 来监听任务
 	QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>();
 	// 连接 finished 信号，当任务完成时触发
@@ -61,20 +61,10 @@ void ImageUtils::saveAvatarToLocal(const QString& avatarPath, const QString& id,
 	// 设置 QFutureWatcher 监听任务
 	watcher->setFuture(future);
 }
-bool ImageUtils::saveAvatarToLocalTask(const QString& avatarPath, const QString& id, ChatType type)
+bool ImageUtils::saveAvatarToLocalTask(const QString& avatarPath, const QString& id)
 {
 	QString avatarFolderPath;
-	switch (type)
-	{
-	case ChatType::User:
 		avatarFolderPath = getUserAvatarFolderPath();
-		break;
-	case ChatType::Group:
-		avatarFolderPath = getGroupAvatarFolderPath();
-		break;
-	default:
-		break;
-	}
 	// 使用用户 ID 来命名头像文件
 	QString avatarFileName = avatarFolderPath + "/" + id + ".png";
 
@@ -88,9 +78,9 @@ bool ImageUtils::saveAvatarToLocalTask(const QString& avatarPath, const QString&
 }
 
 //保存图片
-void ImageUtils::saveAvatarToLocal(const QImage& image, const QString& id, ChatType type, std::function<void()>callBack)
+void ImageUtils::saveAvatarToLocal(const QImage& image, const QString& id,  std::function<void()>callBack)
 {
-	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QImage&, const QString&, ChatType)>(&ImageUtils::saveAvatarToLocalTask), image, id, type);
+	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QImage&, const QString&)>(&ImageUtils::saveAvatarToLocalTask), image, id);
 	// 创建 QFutureWatcher 来监听任务
 	QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>();
 	// 连接 finished 信号，当任务完成时触发
@@ -114,20 +104,10 @@ void ImageUtils::saveAvatarToLocal(const QImage& image, const QString& id, ChatT
 	// 设置 QFutureWatcher 监听任务
 	watcher->setFuture(future);
 }
-bool ImageUtils::saveAvatarToLocalTask(const QImage& image, const QString& id, ChatType type)
+bool ImageUtils::saveAvatarToLocalTask(const QImage& image, const QString& id)
 {
 	QString avatarFolderPath;
-	switch (type)
-	{
-	case ChatType::User:
 		avatarFolderPath = getUserAvatarFolderPath();
-		break;
-	case ChatType::Group:
-		avatarFolderPath = getGroupAvatarFolderPath();
-		break;
-	default:
-		break;
-	}
 	// 使用用户 ID 来命名头像文件
 	QString avatarFileName = QDir(avatarFolderPath).filePath(id + ".png");
 
@@ -140,9 +120,9 @@ bool ImageUtils::saveAvatarToLocalTask(const QImage& image, const QString& id, C
 }
 
 //保存图片
-void ImageUtils::saveAvatarToLocal(const QByteArray& data, const QString& id, ChatType type, std::function<void()> callBack)
+void ImageUtils::saveAvatarToLocal(const QByteArray& data, const QString& id, std::function<void()> callBack)
 {
-	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QByteArray&, const QString&, ChatType)>(&ImageUtils::saveAvatarToLocalTask), data, id, type);
+	QFuture<bool> future = QtConcurrent::run(static_cast<bool(*)(const QByteArray&, const QString&)>(&ImageUtils::saveAvatarToLocalTask), data, id);
 	// 创建 QFutureWatcher 来监听任务
 	QFutureWatcher<bool>* watcher = new QFutureWatcher<bool>();
 	// 连接 finished 信号，当任务完成时触发
@@ -165,20 +145,10 @@ void ImageUtils::saveAvatarToLocal(const QByteArray& data, const QString& id, Ch
 	// 设置 QFutureWatcher 监听任务
 	watcher->setFuture(future);
 }
-bool ImageUtils::saveAvatarToLocalTask(const QByteArray& data, const QString& id, ChatType type)
+bool ImageUtils::saveAvatarToLocalTask(const QByteArray& data, const QString& id)
 {
 	QString avatarFolderPath;
-	switch (type)
-	{
-	case ChatType::User:
 		avatarFolderPath = getUserAvatarFolderPath();
-		break;
-	case ChatType::Group:
-		avatarFolderPath = getGroupAvatarFolderPath();
-		break;
-	default:
-		break;
-	}
 
 	// 使用用户 ID 来命名头像文件
 	QString avatarFileName = QDir(avatarFolderPath).filePath(id + ".png");
@@ -197,20 +167,10 @@ bool ImageUtils::saveAvatarToLocalTask(const QByteArray& data, const QString& id
 }
 
 //加载图片
-QByteArray ImageUtils::loadImage(const QString& id, ChatType type)
+QByteArray ImageUtils::loadImage(const QString& id)
 {
 	QString avatarFolder;
-	switch (type)
-	{
-	case ChatType::User:
 		avatarFolder = getUserAvatarFolderPath();
-		break;
-	case ChatType::Group:
-		avatarFolder = getGroupAvatarFolderPath();
-		break;
-	default:
-		break;
-	}
 	QDir().mkpath(avatarFolder);  // 确保目录存在
 	auto avatarPath = avatarFolder + "/" + id + ".png";
 	// 加载图片

@@ -4,11 +4,6 @@
 #include <QCoreApplication>
 
 
-void Client_UserHandle::handle_updateUserMessage(const QJsonObject& paramsObject, const QByteArray& data)
-{
-	EventBus::instance()->emit updateUserMessage(paramsObject);
-}
-
 void Client_UserHandle::handle_updateUserAvatar(const QJsonObject& paramsObject, const QByteArray& data)
 {
 	// 将操作抛到主线程执行

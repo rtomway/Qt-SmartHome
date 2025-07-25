@@ -36,38 +36,35 @@ LoginUserManager::LoginUserManager()
 				});
 		});
 	//登录用户初始化
-	connect(EventBus::instance(), &EventBus::loginUserInit, this, &LoginUserManager::initLoginUser);
+	connect(EventBus::instance(), &EventBus::loginUserInit, this, &LoginUserManager::onInitLoginUser);
 }
 
 //设置当前用户信息
-void LoginUserManager::initLoginUser(const QJsonObject& loginUserObj)
+void LoginUserManager::onInitLoginUser(const QJsonObject& loginUserObj)
 {
-	auto user_id = loginUserObj["user_id"].toString();
-	auto user_name = loginUserObj["username"].toString();
 	//加载当前登录用户信息
-	m_loginUserId = user_id;
-	m_loginUserName = user_name;
-	//头像保存文件指定
-	ImageUtils::setLoginUser(m_loginUserId);
+	m_loginUser_id = loginUserObj["user_id"].toString();
+	m_loginUser_name = loginUserObj["user_name"].toString();
+
 	//向内部发送信号
-	emit loginUserLoadSuccess();
+	emit loginUserLoadSuccess(loginUserObj);
 }
 
 //获取登录用户Id
-const QString& LoginUserManager::getLoginUserID() const
+const QString& LoginUserManager::get_loginUser_id() const
 {
-	return m_loginUserId;
+	return m_loginUser_id;
 }
 
 //获取登录用户姓名
-const QString& LoginUserManager::getLoginUserName() const
+const QString& LoginUserManager::get_loginUser_name() const
 {
-	return m_loginUserName;
+	return m_loginUser_name;
 }
 
 //清除信息
 void LoginUserManager::clearLoginUserManager()
 {
-	m_loginUserId = QString();
-	m_loginUserName = QString();
+	m_loginUser_id = QString();
+	m_loginUser_name = QString();
 }

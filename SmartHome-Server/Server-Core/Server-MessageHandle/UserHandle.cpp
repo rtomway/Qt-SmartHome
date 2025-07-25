@@ -27,28 +27,6 @@ void UserHandle::handle_queryUser(const QJsonObject& paramsObj, const QByteArray
 	responder.write(allData, mimeType);
 }
 
-//用户信息更新
-void UserHandle::handle_updateUserMessage(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder)
-{
-	UserInfo userInfo;
-	userInfo.user_id = paramsObj["user_id"].toString();
-	userInfo.username = paramsObj["username"].toString();
-	userInfo.gender = paramsObj["gender"].toInt();
-	userInfo.age = paramsObj["age"].toInt();
-	userInfo.phone_number = paramsObj["phone_number"].toString();
-	userInfo.email = paramsObj["email"].toString();
-	userInfo.birthday = QDateTime::fromString(paramsObj["birthday"].toString(), "MM-dd");
-	userInfo.signature = paramsObj["signature"].toString();
-	DataBaseQuery query;
-	auto queryResult = UserDBUtils::updateUserMessage(userInfo, query);
-	//错误返回
-	if (!queryResult) {
-		qDebug() << "Error query:";
-		return;
-	}
-	responder.write(QHttpServerResponder::StatusCode::NoContent);
-	
-}
 
 //用户修改密码
 void UserHandle::handle_passwordChange(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder)
@@ -114,7 +92,7 @@ void UserHandle::handle_updateUserAvatar(const QJsonObject& paramsObj, const QBy
 		return;
 	}
 	//图片保存
-	ImageUtils::saveAvatarToLocal(image, user_id, ChatType::User);
+	ImageUtils::saveAvatarToLocal(image, user_id);
 	//转发头像信息
 	//数据打包
 	auto userPacket = PacketCreate::binaryPacket("updateUserAvatar", paramsObj.toVariantMap(), data);

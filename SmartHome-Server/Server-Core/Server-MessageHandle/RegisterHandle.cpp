@@ -13,7 +13,7 @@ void RegisterHandle::handle_register(const QJsonObject& paramsObj,const QByteArr
 {
 	RegisterMessage registerMessage;
 	registerMessage.user_id = CreateId::generateUserID(CreateId::Id::User);
-	registerMessage.username = paramsObj["username"].toString();
+	registerMessage.username = paramsObj["user_name"].toString();
 	registerMessage.password = paramsObj["password"].toString();
 	registerMessage.confidential = paramsObj["confidential"].toString();
 	//注册信息插入

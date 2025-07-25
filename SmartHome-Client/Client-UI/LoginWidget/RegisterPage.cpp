@@ -71,7 +71,7 @@ void RegisterPage::onRegisterUser()
 	}
 	//向服务器发送注册信息
 	QJsonObject registerObj;
-	registerObj["username"] = ui->nickNameEdit->text();
+	registerObj["user_name"] = ui->nickNameEdit->text();
 	registerObj["password"] = ui->passwordEdit->text();
 	registerObj["confidential"] = ui->confidential->text();
 	QJsonDocument doc(registerObj);

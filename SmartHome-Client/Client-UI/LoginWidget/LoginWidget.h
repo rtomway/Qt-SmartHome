@@ -2,10 +2,6 @@
 #define LOGINWIDGET_H_
 
 #include <QWidget>
-#include <QRadioButton>
-#include <QPushButton>
-#include <QPoint>
-#include <memory>
 
 #include "AngleRoundedWidget.h"
 #include "RegisterPage.h"
@@ -25,6 +21,7 @@ private:
 	void onLoginRequest();
 	void onRegister();
 	void onForgetPassword();
+	void onLoginSuccess();
 
 private:
 	Ui::LoginWidget* ui;

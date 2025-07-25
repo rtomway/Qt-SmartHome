@@ -67,7 +67,7 @@ void LoginHandle::handle_login(const QJsonObject& paramsObject, const QByteArray
 	{
 
 	}
-	auto imageData = ImageUtils::loadImage(user_id, ChatType::User);
+	auto imageData = ImageUtils::loadImage(user_id);
 	auto packet = PacketCreate::binaryPacket("loginSuccess", loginUserObj.toVariantMap(), imageData);
 	QByteArray loginUserData;
 	PacketCreate::addPacket(loginUserData, packet);

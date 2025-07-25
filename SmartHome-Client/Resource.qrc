@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/picture">
         <file>Resource/Picture/login.png</file>
+        <file>Resource/Picture/user_defalut.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>
@@ -10,5 +11,13 @@
     </qresource>
     <qresource prefix="/icon">
         <file>Resource/Icon/x.png</file>
+        <file>Resource/Icon/device.png</file>
+        <file>Resource/Icon/main.png</file>
+        <file>Resource/Icon/room.png</file>
+        <file>Resource/Icon/expand.png</file>
+        <file>Resource/Icon/hide.png</file>
+        <file>Resource/Icon/device_hover.png</file>
+        <file>Resource/Icon/main_hover.png</file>
+        <file>Resource/Icon/room_hover.png</file>
     </qresource>
 </RCC>

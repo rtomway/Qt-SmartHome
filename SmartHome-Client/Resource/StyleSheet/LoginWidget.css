@@ -15,7 +15,7 @@ QPushButton#loginBtn {
 }
 
 QPushButton#loginBtn:hover {
-    background-color: rgb(224, 221, 221);
+    background-color: #0096FF;
 }
 
 QPushButton#registerBtn {
@@ -27,7 +27,7 @@ QPushButton#registerBtn {
 }
 
 QPushButton#registerBtn:hover {
-    background-color: rgb(224, 221, 221);
+    background-color: #0096FF;
 }
 
 QPushButton#forgetPasBtn {

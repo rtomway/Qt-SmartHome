@@ -33,7 +33,7 @@ bool LoginDBUtils::validationPassWord(const QString& user_id, const QString& pas
 //注册插入新用户
 bool LoginDBUtils::insertUser(const RegisterMessage& registerMessage, DataBaseQuery& query, std::shared_ptr<QSqlQuery> queryPtr)
 {
-	QString queryStr = QString("insert into user (user_id,username,password,avatar_path,confidential)values(?,?,?,?,?)");
+	QString queryStr = QString("insert into user (user_id,user_name,password,avatar_path,confidential)values(?,?,?,?,?)");
 	auto avatarPath = ImageUtils::getUserAvatarFolderPath() + "/" + registerMessage.user_id + ".png";
 	QVariantList bindValues;
 	bindValues.append(registerMessage.user_id);

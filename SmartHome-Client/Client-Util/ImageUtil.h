@@ -5,12 +5,14 @@
 #include <QSize>
 #include <QGuiApplication> 
 #include <QThread>
+#include <QPixmap>
 
 
 class ImageUtils {
 public:
 	static QPixmap roundedPixmap(const QPixmap& image, QSize size, int radius);
 	static QPixmap roundedPixmap(const QPixmap& image, QSize size);
+	static void getUserAvatar(const QString& user_id, std::function<void(QPixmap)>callBack);
 
 	static void setLoginUser(const QString&user_id);
 	static QString getUserAvatarFolderPath();
