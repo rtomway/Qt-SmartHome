@@ -3,6 +3,12 @@
         <file>Resource/Picture/login.png</file>
         <file>Resource/Picture/user_defalut.png</file>
         <file>Resource/Picture/login_1.png</file>
+        <file>Resource/Picture/sun.png</file>
+        <file>Resource/Picture/cloudy.png</file>
+        <file>Resource/Picture/heavy_rain.png</file>
+        <file>Resource/Picture/light_rain.png</file>
+        <file>Resource/Picture/Moderate_rain.png</file>
+        <file>Resource/Picture/Thunder_storm.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>
@@ -10,6 +16,7 @@
         <file>Resource/StyleSheet/RegisterPage.css</file>
         <file>Resource/StyleSheet/PasswordChangePage.css</file>
         <file>Resource/StyleSheet/HoomPage.css</file>
+        <file>Resource/StyleSheet/WeatherWidget.css</file>
     </qresource>
     <qresource prefix="/icon">
         <file>Resource/Icon/x.png</file>
@@ -21,5 +28,7 @@
         <file>Resource/Icon/device_hover.png</file>
         <file>Resource/Icon/main_hover.png</file>
         <file>Resource/Icon/room_hover.png</file>
+        <file>Resource/Icon/temperature.png</file>
+        <file>Resource/Icon/humdity.png</file>
     </qresource>
 </RCC>

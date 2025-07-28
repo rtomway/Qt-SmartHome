@@ -1,0 +1,16 @@
+﻿
+QWidget#WeatherWidget {
+    background-color: red;
+    border:1px,solid,black;
+}
+
+QLabel#localTemperLab {
+    font-size: 26px;
+}
+
+QPushButton#temperBtn{
+    background-color:transparent;
+}
+QPushButton#humdityBtn {
+    background-color: transparent;
+}

@@ -1,9 +1,10 @@
 ﻿#include "NetWorkService.h"
 
 
-NetWorkService::NetWorkService(WebClientPort* webClientPort, HttpClientPort* httpClientPort, QObject* parent)
+NetWorkService::NetWorkService(WebClientPort* webClientPort, HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort,QObject* parent)
 	: m_webClientPort(webClientPort)
 	, m_httpClientPort(httpClientPort)
+	, m_externalHttpClientPort(externalHttpClientPort)
 	, m_messageHandle(new MessageHandle(this))
 {
 	init();
@@ -47,6 +48,11 @@ void NetWorkService::sendHttpGetRequest(const QString& path, const QUrlQuery& pa
 void NetWorkService::sendHttpPostRequest(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback)
 {
 	m_httpClientPort->post(path, data, headers, callback);
+}
+
+void NetWorkService::sendExternalHttpGetRequest(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback)
+{
+	m_externalHttpClientPort->get(path, params, headers, callback);
 }
 
 

@@ -4,6 +4,9 @@ QWidget#MainWidget {
     border: none;
     border-radius: 10px;
 }
+QWidget#HoomPage {
+    background-color: red;
+}
 
 QPushButton
 {

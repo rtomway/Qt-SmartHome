@@ -9,6 +9,7 @@ file(GLOB UI_SOURCES
     LoginWidget/*.cpp
     MainWidget/*.cpp
     MainWidget/HoomPage/*.cpp
+    MainWidget/HoomPage/WeatherWidget/*.cpp
     MainWidget/DevicePage/*.cpp
     MainWidget/RoomPage/*.cpp
 )
@@ -17,6 +18,7 @@ file(GLOB UI_HEADERS
     LoginWidget/*.h
     MainWidget/*.h
     MainWidget/HoomPage/*.h
+     MainWidget/HoomPage/WeatherWidget/*.h
     MainWidget/DevicePage/*.h
     MainWidget/RoomPage/*.h
 )
@@ -30,6 +32,7 @@ target_include_directories(Client-UI PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/LoginWidget
     ${CMAKE_CURRENT_SOURCE_DIR}/MainWidget
     ${CMAKE_CURRENT_SOURCE_DIR}/MainWidget/HoomPage
+    ${CMAKE_CURRENT_SOURCE_DIR}/MainWidget/HoomPage/WeatherWidget
     ${CMAKE_CURRENT_SOURCE_DIR}/MainWidget/DevicePage
     ${CMAKE_CURRENT_SOURCE_DIR}/MainWidget/RoomPage
 )

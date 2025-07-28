@@ -9,7 +9,7 @@ add_library(Client-NetWork STATIC
      NetWorkService.h   NetWorkService.cpp
      HttpClientPort.h   
      WebClientPort.h
-    )
+     "ExternalHttpClient.cpp")
 
 # 设置包含目录（确保主程序能访问头文件）
 target_include_directories(Client-NetWork PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

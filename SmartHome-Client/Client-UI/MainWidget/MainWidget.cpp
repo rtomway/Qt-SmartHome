@@ -21,8 +21,7 @@ MainWidget::MainWidget(QWidget* parent)
 {
 	ui->setupUi(this);
 	init();
-	initStackedWidget();
-
+	
 	QFile file(":/stylesheet/Resource/StyleSheet/MainWidget.css");
 	if (file.open(QIODevice::ReadOnly))
 	{
@@ -40,9 +39,11 @@ MainWidget::~MainWidget()
 //界面初始化
 void MainWidget::init()
 {
+	initStackedWidget();
+
 	this->setObjectName("MainWidget");
 	this->setWindowFlag(Qt::FramelessWindowHint);
-	this->resize(1080, 680);
+	this->resize(880, 480);
 	ui->headLab->installEventFilter(this);
 	//窗口操作按钮图标
 	ui->hideBtn->setIcon(QIcon(":/icon/Resource/Icon/hide.png"));

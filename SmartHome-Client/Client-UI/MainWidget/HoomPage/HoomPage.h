@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include "WeatherWidget.h"
 
 namespace Ui { class HoomPage; }
 
@@ -18,6 +19,7 @@ private:
 private:
 	Ui::HoomPage* ui;
 	QTimer* m_timer;
+	WeatherWidget* m_weatherWidget;
 };
 
 #endif // !HOOMPAGE_H_
