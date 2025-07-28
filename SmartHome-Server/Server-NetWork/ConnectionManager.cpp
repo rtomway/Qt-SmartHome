@@ -25,12 +25,12 @@ void ConnectionManager::onNewConnection(QWebSocket* client)
 void ConnectionManager::onTextMessageReceived(const QString& message)
 {
 	auto socket = dynamic_cast<QWebSocket*>(sender());
-	m_messageHandle.handle_message(message, socket);
+	m_messageHandle.webTextHandler(message, socket);
 }
 void ConnectionManager::onBinaryMessageReceived(const QByteArray& message)
 {
 	auto socket = dynamic_cast<QWebSocket*>(sender());
-	m_messageHandle.handle_message(message, socket);
+	m_messageHandle.webBinaryHandler(message, socket);
 }
 
 //客户端断连
@@ -79,6 +79,8 @@ void ConnectionManager::sendBinaryMessage(const QString& user_id, const QByteArr
 //客户端添加
 void ConnectionManager::addClient(const QString& user_id, QWebSocket* socket)
 {
+	if (m_clients.contains(user_id))
+		return;
 	qDebug() << "客户端" << user_id << "加入连接表";
 	m_clients[user_id] = socket;
 }

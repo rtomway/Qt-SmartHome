@@ -2,12 +2,14 @@
     <qresource prefix="/picture">
         <file>Resource/Picture/login.png</file>
         <file>Resource/Picture/user_defalut.png</file>
+        <file>Resource/Picture/login_1.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>
         <file>Resource/StyleSheet/MainWidget.css</file>
         <file>Resource/StyleSheet/RegisterPage.css</file>
         <file>Resource/StyleSheet/PasswordChangePage.css</file>
+        <file>Resource/StyleSheet/HoomPage.css</file>
     </qresource>
     <qresource prefix="/icon">
         <file>Resource/Icon/x.png</file>

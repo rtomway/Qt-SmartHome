@@ -8,6 +8,7 @@ HttpRouteManager::HttpRouteManager(QHttpServer* server, QObject* parent)
 	setupRoutes();
 }
 
+//路由注册
 void HttpRouteManager::setupRoutes()
 {
 	registerHttpRoute("/loginValidation");
@@ -16,22 +17,36 @@ void HttpRouteManager::setupRoutes()
 	registerHttpRoute("/passwordChange");
 }
 
+//请求分配处理
 void HttpRouteManager::registerHttpRoute(const QString& path)
 {
-	QString type = path;
-	if (type.startsWith('/'))
-		type.remove(0, 1);
 	//http请求路由并注册
-	m_httpServer->route(path, [this, type](const QHttpServerRequest& req, QHttpServerResponder&& resp) 
+	m_httpServer->route(path, [this](const QHttpServerRequest& request, QHttpServerResponder&& response)
 		{
-			auto content_type = req.value("Content-Type");
-			if (content_type.contains("application/json"))
+			auto httpMethod = request.method();
+			switch (httpMethod)
 			{
-				m_messageHandle.handle_message(type, req, resp);
-			}
-			else if (content_type.contains("application/octet-stream"))
+			case QHttpServerRequest::Method::Get:
 			{
-				m_messageHandle.handle_message(req, resp);
+				m_messageHandle.httpGetHandler(request, response);
 			}
+			break;
+			case QHttpServerRequest::Method::Post:
+			{
+				auto content_type = request.value("Content-Type");
+				if (content_type.contains("application/json"))
+				{
+					m_messageHandle.httpPostTextHandler(request, response);
+				}
+				else if (content_type.contains("application/octet-stream"))
+				{
+					m_messageHandle.httpPostBinaryHandler(request, response);
+				}
+			}
+			break;
+			default:
+				break;
+			}
+
 		});
 }

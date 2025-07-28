@@ -15,10 +15,14 @@ MainWidget::MainWidget(QWidget* parent)
 	:AngleRoundedWidget(parent)
 	, ui(new Ui::MainWidget)
 	, m_pageBtnGroup(new QButtonGroup(this))
+	, m_hoomPage(new HoomPage(this))
+	, m_devicePage(new DevicePage(this))
+	, m_roomPage(new RoomPage(this))
 {
 	ui->setupUi(this);
 	init();
-	
+	initStackedWidget();
+
 	QFile file(":/stylesheet/Resource/StyleSheet/MainWidget.css");
 	if (file.open(QIODevice::ReadOnly))
 	{
@@ -75,36 +79,22 @@ void MainWidget::init()
 			emit exitWidget();
 		});
 	//账号退出
-	connect(ui->exitBtn, &QPushButton::clicked, this, [=]
-		{
-			NetWorkServiceLocator::instance()->disConnect();
-			emit quitSuccess();
-		});
+	connect(ui->exitBtn, &QPushButton::clicked, this, &MainWidget::onExitAccount);
 
 	//界面切换
-	connect(m_pageBtnGroup, &QButtonGroup::idClicked, this, [=](int id)
-		{
-			switch (id)
-			{
-			case PageBtn::HOMEPAGE:
-
-				
-				break;
-			case PageBtn::DEVICEPAGE:
-
-			
-				break;
-			case PageBtn::ROOMPAGE:
-
-				
-				break;
-			default:
-				break;
-			}
-		});
+	connect(m_pageBtnGroup, &QButtonGroup::idClicked, this, &MainWidget::onSwitchWidget);
 
 	//数据加载
 	connect(LoginUserManager::instance(), &LoginUserManager::loginUserLoadSuccess, this, &MainWidget::onLoadData);
+}
+
+//初始化堆栈窗口
+void MainWidget::initStackedWidget()
+{
+	ui->stackedWidget->addWidget(m_hoomPage);
+	ui->stackedWidget->addWidget(m_devicePage);
+	ui->stackedWidget->addWidget(m_roomPage);
+	ui->stackedWidget->setCurrentWidget(m_hoomPage);
 }
 
 //数据加载
@@ -118,7 +108,7 @@ void MainWidget::onLoadData(const QJsonObject& obj)
 
 	ImageUtils::getUserAvatar(user_id, [this](QPixmap pixmap)
 		{
-			ui->headLab->setPixmap(ImageUtils::roundedPixmap(pixmap,QSize(60,60)));
+			ui->headLab->setPixmap(ImageUtils::roundedPixmap(pixmap, QSize(60, 60)));
 		});
 }
 
@@ -126,7 +116,7 @@ void MainWidget::onLoadData(const QJsonObject& obj)
 void MainWidget::changeAvatar()
 {
 	//本地保存
-	ImageUtils::saveAvatarToLocal(m_newAvatarPath,m_user_id);
+	ImageUtils::saveAvatarToLocal(m_newAvatarPath, m_user_id);
 	//通知服务端
 	QtConcurrent::run([=]()
 		{
@@ -149,12 +139,42 @@ void MainWidget::changeAvatar()
 			PacketCreate::addPacket(userData, packet);
 			auto allData = PacketCreate::allBinaryPacket(userData);
 
+			QMap<QString, QString>headers;
+			headers.insert("Content-Type", "application/octet-stream");
+
 			// 发到主线程发信号
 			QMetaObject::invokeMethod(NetWorkServiceLocator::instance(), [=]()
 				{
-					NetWorkServiceLocator::instance()->sendHttpRequest("updateUserAvatar", allData, "application/octet-stream");
+					NetWorkServiceLocator::instance()->sendHttpPostRequest("updateUserAvatar", allData, headers);
 				});
 		});
+}
+
+//账号退出
+void MainWidget::onExitAccount()
+{
+	NetWorkServiceLocator::instance()->disConnect();
+	emit quitSuccess();
+}
+
+//界面切换
+void MainWidget::onSwitchWidget(int widget_id)
+{
+	switch (widget_id)
+	{
+	case PageBtn::HOMEPAGE:
+		ui->stackedWidget->setCurrentWidget(m_hoomPage);
+		break;
+	case PageBtn::DEVICEPAGE:
+		ui->stackedWidget->setCurrentWidget(m_devicePage);
+		break;
+	case PageBtn::ROOMPAGE:
+		ui->stackedWidget->setCurrentWidget(m_roomPage);
+
+		break;
+	default:
+		break;
+	}
 }
 
 //事件过滤

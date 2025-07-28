@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QJsonDocument>
+#include <QNetworkRequest>
 
 #include "ImageUtil.h"
 #include "SConfigFile.h"
@@ -82,8 +83,10 @@ void LoginWidget::onLoginRequest()
 	QJsonDocument doc(loginObj);
 	auto data = doc.toJson(QJsonDocument::Compact);
 
+	QMap<QString, QString>headers;
+	headers.insert("Content-Type", "application/json");
 	//发送
-	NetWorkServiceLocator::instance()->sendHttpRequest("loginValidation", data, "application/json");
+	NetWorkServiceLocator::instance()->sendHttpPostRequest("loginValidation", data, headers);
 
 }
 

@@ -7,17 +7,23 @@
 #include <QHttpServerResponder>
 #include "MessageHandle.h"
 
+enum httpMethod
+{
+	Get,
+	Post
+};
+
 class HttpRouteManager : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit HttpRouteManager(QHttpServer* httpServer, QObject* parent = nullptr);
+	explicit HttpRouteManager(QHttpServer* httpServer, QObject* parent = nullptr);
 private:
-    void setupRoutes();
-    void registerHttpRoute(const QString& path);
+	void setupRoutes();
+	void registerHttpRoute(const QString& path);
 private:
-    QHttpServer* m_httpServer;
-    MessageHandle m_messageHandle; 
+	QHttpServer* m_httpServer;
+	MessageHandle m_messageHandle;
 };
 
 #endif // HTTPROUTEMANAGER_H

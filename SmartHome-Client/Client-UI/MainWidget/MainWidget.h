@@ -10,6 +10,10 @@
 
 #include "AngleRoundedWidget.h"
 
+#include "HoomPage.h"
+#include "DevicePage.h"
+#include "RoomPage.h"
+
 namespace Ui { class MainWidget; }
 
 enum PageBtn
@@ -27,8 +31,15 @@ public:
 	~MainWidget();
 private:
 	void init();
+	void initStackedWidget();
 	void onLoadData(const QJsonObject&obj);
 	void changeAvatar();
+	void onExitAccount();
+	void onSwitchWidget(int widget_id);
+private:
+	HoomPage* m_hoomPage;
+	DevicePage* m_devicePage;
+	RoomPage* m_roomPage;
 private:
 	Ui::MainWidget* ui;
 	QString m_user_id;

@@ -25,22 +25,20 @@ void LoginHandle::handle_loginValidation(const QJsonObject& paramsObj, const QBy
 	{
 
 	}
-	QJsonObject userObj;
-	userObj["user_id"] = user_id;
 	// 登录成功，生成 JWT 令牌
-	try {
+	try
+	{
 		// 生成 JWT 令牌
-		auto token = jwt::create<jwt::traits::kazuho_picojson>()  // 使用 kazuho-picojson traits
+		auto token = jwt::create<jwt::traits::kazuho_picojson>()
 			.set_issuer("auth0")
 			.set_type("JWS")
-			.set_payload_claim("user_id", jwt::claim(std::string(user_id.toStdString()))) // 将用户名作为 claim
+			.set_payload_claim("user_id", jwt::claim(std::string(user_id.toStdString()))) // 将用户id作为 claim
 			.sign(jwt::algorithm::hs256{ "xu-server" });
 
-		std::cout << "=== JWT Token ===" << std::endl;
-		std::cout << token << std::endl << std::endl;
-
-		userObj["token"] = QString::fromStdString(token);
 		// 创建响应数据，包含 token
+		QJsonObject userObj;
+		userObj["user_id"] = user_id;
+		userObj["token"] = QString::fromStdString(token);
 		QJsonObject allData;
 		allData["type"] = "loginValidationSuccess";
 		allData["params"] = userObj;
@@ -49,7 +47,8 @@ void LoginHandle::handle_loginValidation(const QJsonObject& paramsObj, const QBy
 		responder.write(responseDoc);
 
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception& e)
+	{
 		// 如果生成 token 时发生异常，暂时不处理
 	}
 

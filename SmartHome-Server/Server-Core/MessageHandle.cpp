@@ -27,18 +27,18 @@ void MessageHandle::initWebRequestHash()
 }
 void MessageHandle::initHttpRequestHash()
 {
-	httpRequestHash["loginValidation"] = LoginHandle::handle_loginValidation;
-	httpRequestHash["updateUserAvatar"] = UserHandle::handle_updateUserAvatar;
+	httpRequestHash["/loginValidation"] = LoginHandle::handle_loginValidation;
+	httpRequestHash["/updateUserAvatar"] = UserHandle::handle_updateUserAvatar;
 }
 
-//无需token验证
+//public操作
 void MessageHandle::initPublicPageType()
 {
-	m_publicPage_list.append("loginValidation");
+	m_publicPage_list.append("/loginValidation");
 }
 
 //token验证
-bool MessageHandle::tokenRight(const QString& token, const QString& user_id, const QString& type)
+bool MessageHandle::webTokenVerify(const QString& token, const QString& user_id, const QString& type)
 {
 	if (m_publicPage_list.contains(type))
 	{
@@ -57,7 +57,7 @@ bool MessageHandle::tokenRight(const QString& token, const QString& user_id, con
 
 		// 检查 payload 中的 user_id
 		std::string payload_user_id = decoded.get_payload_claim("user_id").as_string();
-		if (payload_user_id != user_id.toStdString()) 
+		if (payload_user_id != user_id.toStdString())
 		{
 			qDebug() << "[Token无效] user_id不匹配";
 			return false;
@@ -65,15 +65,66 @@ bool MessageHandle::tokenRight(const QString& token, const QString& user_id, con
 
 		return true;
 	}
-	catch (const std::exception& e) 
+	catch (const std::exception& e)
+	{
+		qDebug() << "[Token验证失败]" << e.what();
+		return false;
+	}
+}
+bool MessageHandle::httpToeknVerify(const QString& type, const QHttpServerRequest& request)
+{
+	//公共界面访问无需验证
+	if (m_publicPage_list.contains(type))
+	{
+		return true;
+	}
+	//获取需验证的信息
+	QString token;
+	QString user_id;
+	for (auto& requestHeader : request.headers())
+	{
+		if (requestHeader.first == "user_id")
+		{
+			user_id = requestHeader.second;
+		}
+		if (requestHeader.first == "Authorization")
+		{
+			token = requestHeader.second;
+		}
+	}
+	// 可能是 Bearer 开头，记得处理
+	if (token.startsWith("Bearer "))
+		token = token.mid(7);
+	//验证
+	try {
+		auto decoded = jwt::decode(token.toStdString());
+
+		// 校验签名
+		auto verifier = jwt::verify()
+			.allow_algorithm(jwt::algorithm::hs256{ "xu-server" })
+			.with_issuer("auth0");
+
+		verifier.verify(decoded);
+
+		// 检查 payload 中的 user_id
+		std::string payload_user_id = decoded.get_payload_claim("user_id").as_string();
+		if (payload_user_id != user_id.toStdString())
+		{
+			qDebug() << "[Token无效] user_id不匹配";
+			return false;
+		}
+
+		return true;
+	}
+	catch (const std::exception& e)
 	{
 		qDebug() << "[Token验证失败]" << e.what();
 		return false;
 	}
 }
 
-//web消息处理接口
-void MessageHandle::handle_message(const QString& message, QWebSocket* socket)
+//web消息处理
+void MessageHandle::webTextHandler(const QString& message, QWebSocket* socket)
 {
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	if (doc.isObject())
@@ -86,7 +137,7 @@ void MessageHandle::handle_message(const QString& message, QWebSocket* socket)
 		if (!client_id.isEmpty())
 		{
 			auto token = paramsObject["token"].toString();
-			if (!tokenRight(token, client_id, type))
+			if (!webTokenVerify(token, client_id, type))
 			{
 				qDebug() << "token认证失败";
 				return;
@@ -106,7 +157,7 @@ void MessageHandle::handle_message(const QString& message, QWebSocket* socket)
 		}
 	}
 }
-void MessageHandle::handle_message(const QByteArray& message, QWebSocket* socket)
+void MessageHandle::webBinaryHandler(const QByteArray& message, QWebSocket* socket)
 {
 	auto parsePacketList = PacketCreate::parseDataPackets(message);
 	for (auto& parsePacket : parsePacketList)
@@ -115,7 +166,7 @@ void MessageHandle::handle_message(const QByteArray& message, QWebSocket* socket
 		//验证token
 		auto token = parsePacket.params["token"].toString();
 		auto user_id = parsePacket.params["user_id"].toString();
-		if (!tokenRight(token, user_id, parsePacket.type))
+		if (!webTokenVerify(token, user_id, parsePacket.type))
 		{
 			qDebug() << "token认证失败";
 			return;
@@ -131,83 +182,87 @@ void MessageHandle::handle_message(const QByteArray& message, QWebSocket* socket
 	}
 }
 
-//http消息处理接口
-void MessageHandle::handle_message(const QString& type, const QHttpServerRequest& request, QHttpServerResponder& response)
+//http消息处理
+void MessageHandle::httpGetHandler(const QHttpServerRequest& request, QHttpServerResponder& response)
 {
+	auto url = request.url();
+	auto type = url.path();
 	//token验证
-	QString token;
-	QString user_id;
-	for (auto& requestHeader : request.headers())
+	if (!httpToeknVerify(type, request))
 	{
-		if (requestHeader.first == "user_id")
-		{
-			user_id = requestHeader.second;
-		}
-		if (requestHeader.first == "Authorization")
-		{
-			token = requestHeader.second;
-		}
-	}
-	// 可能是 Bearer 开头，记得处理
-	if (token.startsWith("Bearer "))
-		token = token.mid(7);
-	if (!tokenRight(token, user_id, type))
-	{
-		qDebug() << "token认证失败";
+		qDebug() << "token验证失败";
 		return;
 	}
+	//参数数据
+	QUrlQuery query(url);
+	QJsonObject paramsObj;
+	for (const auto& item : query.queryItems())
+	{
+		paramsObj[item.first] = item.second;
+	}
 
-	auto requestBody = request.body();
-	auto paramsObj = QJsonDocument::fromJson(requestBody).object();
 	// 根据类型给处理函数处理
-	if (httpRequestHash.contains(type)) {
+	if (httpRequestHash.contains(type))
+	{
 		auto handle = httpRequestHash[type];
 		handle(paramsObj, QByteArray(), response);  // 调用对应的处理函数
 	}
-	else {
+	else
+	{
 		qDebug() << "未知的类型:" << type;
 	}
 }
-void MessageHandle::handle_message(const QHttpServerRequest& request, QHttpServerResponder& responder)
+void MessageHandle::httpPostTextHandler(const QHttpServerRequest& request, QHttpServerResponder& response)
 {
+	auto url = request.url();
+	auto type = url.path();
 	//token验证
-	QString token;
-	QString user_id;
-	for (auto& requestHeader : request.headers())
+	if (!httpToeknVerify(type, request))
 	{
-		if (requestHeader.first == "user_id")
-		{
-			user_id = requestHeader.second;
-		}
-		if (requestHeader.first == "Authorization")
-		{
-			token = requestHeader.second;
-		}
+		qDebug() << "token验证失败";
+		return;
 	}
-
+	//数据
+	auto requestBody = request.body();
+	auto paramsObj = QJsonDocument::fromJson(requestBody).object();
+	// 根据类型给处理函数处理
+	if (httpRequestHash.contains(type))
+	{
+		auto handle = httpRequestHash[type];
+		handle(paramsObj, QByteArray(), response);  // 调用对应的处理函数
+	}
+	else
+	{
+		qDebug() << "未知的类型:" << type;
+	}
+}
+void MessageHandle::httpPostBinaryHandler(const QHttpServerRequest& request, QHttpServerResponder& response)
+{
+	auto url = request.url();
+	auto type = url.path();
+	//token验证
+	if (!httpToeknVerify(type, request))
+	{
+		qDebug() << "token验证失败";
+		return;
+	}
 	auto message = request.body();
 	auto parsePacketList = PacketCreate::parseDataPackets(message);
 	for (auto& parsePacket : parsePacketList)
 	{
-		qDebug() << "客户端发来消息type:" << parsePacket.type;
-
-		// 可能是 Bearer 开头，记得处理
-		if (token.startsWith("Bearer "))
-			token = token.mid(7);
-		if (!tokenRight(token, user_id, parsePacket.type))
-		{
-			qDebug() << "token认证失败";
-			return;
-		}
-
 		// 根据类型给处理函数处理
-		if (httpRequestHash.contains(parsePacket.type)) {
-			auto handle = httpRequestHash[parsePacket.type];
-			handle(parsePacket.params, parsePacket.data, responder);  // 调用对应的处理函数
+		if (httpRequestHash.contains(type))
+		{
+			auto handle = httpRequestHash[type];
+			handle(parsePacket.params, parsePacket.data, response);  // 调用对应的处理函数
 		}
-		else {
-			qDebug() << "未知的类型:" << parsePacket.type;
+		else
+		{
+			qDebug() << "未知的类型:" << type;
 		}
 	}
 }
+
+
+
 

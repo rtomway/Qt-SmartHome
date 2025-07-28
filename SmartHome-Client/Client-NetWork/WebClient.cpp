@@ -30,7 +30,6 @@ void WebClient::connectToServer(const QString& url, std::function<void()>callbac
 	if (!isConnected())
 	{
 		m_url = url;
-		//Network_Logger::info("[WebSocket] Attemp connected to Server at:" + this->url());
 		this->Connected([callback]
 			{
 				if (callback)
