@@ -83,10 +83,8 @@ void LoginWidget::onLoginRequest()
 	QJsonDocument doc(loginObj);
 	auto data = doc.toJson(QJsonDocument::Compact);
 
-	QMap<QString, QString>headers;
-	headers.insert("Content-Type", "application/json");
 	//发送
-	NetWorkServiceLocator::instance()->sendHttpPostRequest("loginValidation", data, headers);
+	NetWorkServiceLocator::instance()->sendHttpPostRequest("loginValidation", data);
 
 }
 

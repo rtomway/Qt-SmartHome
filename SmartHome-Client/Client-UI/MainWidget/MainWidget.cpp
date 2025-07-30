@@ -21,7 +21,45 @@ MainWidget::MainWidget(QWidget* parent)
 {
 	ui->setupUi(this);
 	init();
-	
+
+}
+MainWidget::~MainWidget()
+{
+	delete ui;
+}
+
+//初始化
+void MainWidget::init()
+{
+	initStackedWidget();
+	initUi();
+
+	//窗口显示操作
+	connect(ui->hideBtn, &QPushButton::clicked, this, [=]
+		{
+			emit hideWidget();
+		});
+	connect(ui->expandBtn, &QPushButton::clicked, this, [=]
+		{
+			emit expandWidget();
+		});
+	connect(ui->exitWidgetBtn, &QPushButton::clicked, this, [=]
+		{
+			emit exitWidget();
+		});
+	//账号退出
+	connect(ui->exitBtn, &QPushButton::clicked, this, &MainWidget::onExitAccount);
+	//界面切换
+	connect(m_pageBtnGroup, &QButtonGroup::idClicked, this, &MainWidget::onSwitchWidget);
+	//数据加载
+	connect(LoginUserManager::instance(), &LoginUserManager::loginUserLoadSuccess, this, &MainWidget::onLoadData);
+}
+
+//界面初始化
+void MainWidget::initUi()
+{
+	this->setObjectName("MainWidget");
+	this->setAttribute(Qt::WA_StyledBackground, true);
 	QFile file(":/stylesheet/Resource/StyleSheet/MainWidget.css");
 	if (file.open(QIODevice::ReadOnly))
 	{
@@ -30,20 +68,7 @@ MainWidget::MainWidget(QWidget* parent)
 	else {
 		qDebug() << "样式表打开失败";
 	}
-}
-MainWidget::~MainWidget()
-{
-	delete ui;
-}
 
-//界面初始化
-void MainWidget::init()
-{
-	initStackedWidget();
-
-	this->setObjectName("MainWidget");
-	this->setWindowFlag(Qt::FramelessWindowHint);
-	this->resize(880, 480);
 	ui->headLab->installEventFilter(this);
 	//窗口操作按钮图标
 	ui->hideBtn->setIcon(QIcon(":/icon/Resource/Icon/hide.png"));
@@ -65,28 +90,6 @@ void MainWidget::init()
 	ui->homeBtn->setFixedSize(30, 30);
 	ui->deviceBtn->setFixedSize(30, 30);
 	ui->roomBtn->setFixedSize(30, 30);
-
-	//窗口显示操作
-	connect(ui->hideBtn, &QPushButton::clicked, this, [=]
-		{
-			emit hideWidget();
-		});
-	connect(ui->expandBtn, &QPushButton::clicked, this, [=]
-		{
-			emit expandWidget();
-		});
-	connect(ui->exitWidgetBtn, &QPushButton::clicked, this, [=]
-		{
-			emit exitWidget();
-		});
-	//账号退出
-	connect(ui->exitBtn, &QPushButton::clicked, this, &MainWidget::onExitAccount);
-
-	//界面切换
-	connect(m_pageBtnGroup, &QButtonGroup::idClicked, this, &MainWidget::onSwitchWidget);
-
-	//数据加载
-	connect(LoginUserManager::instance(), &LoginUserManager::loginUserLoadSuccess, this, &MainWidget::onLoadData);
 }
 
 //初始化堆栈窗口

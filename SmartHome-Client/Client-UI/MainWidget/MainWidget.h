@@ -31,8 +31,10 @@ public:
 	~MainWidget();
 private:
 	void init();
+	void initUi();
 	void initStackedWidget();
-	void onLoadData(const QJsonObject&obj);
+private:
+	void onLoadData(const QJsonObject& obj);
 	void changeAvatar();
 	void onExitAccount();
 	void onSwitchWidget(int widget_id);

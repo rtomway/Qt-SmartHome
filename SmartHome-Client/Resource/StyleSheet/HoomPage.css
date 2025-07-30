@@ -1,7 +1,3 @@
-﻿QWidget#HoomPage {
-    background-color: red;
-}
-
-QLabel#current_timLab {
+﻿QLabel#current_timLab {
     font-size: 27px;
 }

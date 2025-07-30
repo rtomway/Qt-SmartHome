@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="6,3,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,6,3,1">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -30,6 +30,19 @@
     <number>0</number>
    </property>
    <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QWidget" name="widget_8" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="spacing">
@@ -39,7 +52,7 @@
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
@@ -160,7 +173,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="humdityBtn">
+       <widget class="QPushButton" name="humidityBtn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>

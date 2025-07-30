@@ -41,7 +41,7 @@ void MainWindow::init()
 	//放缩
 	connect(m_mainWidget, &MainWidget::expandWidget, this, [=]
 		{
-			m_mainWidget->resize(1080, 680);
+			m_mainWidget->resize(980, 600);
 			if (this->size() == this->screen()->size())
 			{
 				this->setGeometry(288, 107, m_mainWidget->width(), m_mainWidget->height());
@@ -95,7 +95,7 @@ void MainWindow::showMainWidget()
 	QTimer::singleShot(0, [=] {
 		hide();
 		setMaximumSize(this->screen()->size());
-		resize(1080, 680);
+		resize(980, 600);
 		move(288, 107);
 		m_stackedWidget->setCurrentWidget(m_mainWidget);
 		m_mainWidget->setAutoFillBackground(true);

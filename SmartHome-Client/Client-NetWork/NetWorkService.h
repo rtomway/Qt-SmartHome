@@ -21,9 +21,12 @@ public:
 	void sendWebTextMessage(const QString& message);
 	void sendWebBinaryData(const QByteArray& data);
 	using HttpCallback = std::function<void(const QJsonObject&, const QByteArray&)>;
-	void sendHttpGetRequest(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers = QMap<QString, QString>(), HttpCallback callback = nullptr);
-	void sendHttpPostRequest(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers = QMap<QString, QString>(), HttpCallback callback = nullptr);
-	void sendExternalHttpGetRequest(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers = QMap<QString, QString>(), HttpCallback callback = nullptr);
+	void sendHttpGetRequest(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback = nullptr);
+	void sendHttpPostRequest(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback = nullptr);
+	void sendHttpGetRequest(const QString& path, const QUrlQuery& params, HttpCallback callback = nullptr);
+	void sendHttpPostRequest(const QString& path, const QByteArray& data, HttpCallback callback = nullptr);
+	void sendExternalHttpGetRequest(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback = nullptr);
+	void sendExternalHttpGetRequest(const QString& path, const QUrlQuery& params,HttpCallback callback = nullptr);
 private:
 	void init();
 private:

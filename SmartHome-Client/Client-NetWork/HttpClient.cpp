@@ -15,7 +15,8 @@ HttpClient::HttpClient(QObject* parent)
 {
 
 }
-//get
+
+//http请求
 void HttpClient::get(const QString& type, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback)
 {
 	// 构造URL
@@ -38,8 +39,6 @@ void HttpClient::get(const QString& type, const QUrlQuery& params, const QMap<QS
 			this->handleReply(reply, callback);
 		});
 }
-
-//post请求
 void HttpClient::post(const QString& type, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback)
 {
 	//url
@@ -57,6 +56,15 @@ void HttpClient::post(const QString& type, const QByteArray& data, const QMap<QS
 		});
 }
 
+void HttpClient::get(const QString& type, const QUrlQuery& params, HttpCallback callback)
+{
+	this->get(type, params, QMap<QString, QString>(), callback);
+}
+void HttpClient::post(const QString& type, const QByteArray& data, HttpCallback callback)
+{
+	this->post(type, data, QMap<QString, QString>(), callback);
+}
+
 //请求头的添加
 void HttpClient::setHeaders(QNetworkRequest& request, const QMap<QString, QString>& headers)
 {
@@ -64,6 +72,11 @@ void HttpClient::setHeaders(QNetworkRequest& request, const QMap<QString, QStrin
 	for (auto it = headers.constBegin(); it != headers.constEnd(); ++it)
 	{
 		request.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+	}
+	//默认application/json
+	if (!headers.contains("Content-Type"))
+	{
+		request.setRawHeader("Content-Type", "application/json");
 	}
 	//token
 	QString token = TokenManager::getToken();

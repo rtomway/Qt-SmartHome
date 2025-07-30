@@ -37,7 +37,7 @@
    </property>
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_5" stretch="3,1,5,7,2">
+     <layout class="QVBoxLayout" name="verticalLayout_5" stretch="3,3,7,7,2">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -96,6 +96,9 @@
       <item>
        <widget class="QWidget" name="widget_6" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>15</number>
+         </property>
          <property name="leftMargin">
           <number>20</number>
          </property>
@@ -264,10 +267,25 @@
       <item>
        <widget class="QWidget" name="widget_2" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page"/>
            <widget class="QWidget" name="page_3">

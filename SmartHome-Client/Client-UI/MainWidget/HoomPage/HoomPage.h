@@ -15,6 +15,7 @@ public:
 	~HoomPage();
 private:
 	void init();
+	void initUi();
 	void onUpdateCurrentTime();
 private:
 	Ui::HoomPage* ui;

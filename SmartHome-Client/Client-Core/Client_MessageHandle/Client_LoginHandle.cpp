@@ -18,7 +18,6 @@ void Client_LoginHandle::handle_loginValidationSuccess(const QJsonObject& params
 void Client_LoginHandle::handle_loginSuccess(const QJsonObject& paramsObject, const QByteArray& data)
 {
 	QJsonObject loginUser = paramsObject;
-	qDebug() << paramsObject;
 	auto user_id = loginUser["user_id"].toString();
 	//头像保存文件指定
 	ImageUtils::setLoginUser(user_id);

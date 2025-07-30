@@ -13,6 +13,7 @@ ExternalHttpClient::ExternalHttpClient(QObject* parent)
 
 }
 
+//外部http get请求
 void ExternalHttpClient::get(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback)
 {
 	// 构造URL
@@ -35,12 +36,21 @@ void ExternalHttpClient::get(const QString& path, const QUrlQuery& params, const
 			this->handleReply(reply, callback);
 		});
 }
+void ExternalHttpClient::get(const QString& path, const QUrlQuery& params, HttpCallback callback)
+{
+	this->get(path, params, QMap<QString, QString>(), callback);
+}
 
-void ExternalHttpClient::post(const QString& type, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback)
+//外部http post请求
+void ExternalHttpClient::post(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback)
 {
 
 }
+void ExternalHttpClient::post(const QString& path, const QByteArray& data, HttpCallback callback)
+{
+}
 
+//设置http请求头
 void ExternalHttpClient::setHeaders(QNetworkRequest& request, const QMap<QString, QString>& headers)
 {
 	//添加请求头
@@ -48,8 +58,14 @@ void ExternalHttpClient::setHeaders(QNetworkRequest& request, const QMap<QString
 	{
 		request.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
 	}
+	//默认application/json
+	if (!headers.contains("Content-Type"))
+	{
+		request.setRawHeader("Content-Type", "application/json");
+	}
 }
 
+//回复响应处理
 void ExternalHttpClient::handleReply(QNetworkReply* reply, HttpCallback callback)
 {
 	// 错误处理
@@ -74,6 +90,7 @@ void ExternalHttpClient::handleReply(QNetworkReply* reply, HttpCallback callback
 	reply->deleteLater();
 }
 
+//错误处理
 void ExternalHttpClient::replyErrorHandle(QNetworkReply::NetworkError error)
 {
 	switch (error)
@@ -93,6 +110,7 @@ void ExternalHttpClient::replyErrorHandle(QNetworkReply::NetworkError error)
 	}
 }
 
+//处理回复数据
 void ExternalHttpClient::replyDataHandle(QNetworkReply* reply, HttpCallback callBack)
 {
 	//处理响应

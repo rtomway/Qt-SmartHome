@@ -17,8 +17,10 @@ public:
 	~HttpClientPort() = default;
 
 	using HttpCallback = std::function<void(const QJsonObject&, const QByteArray&)>;
-	virtual void get(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers = QMap<QString, QString>(), HttpCallback callback = nullptr) = 0;
-	virtual void post(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers = QMap<QString, QString>(), HttpCallback callback = nullptr) = 0;
+	virtual void get(const QString& path, const QUrlQuery& params, const QMap<QString, QString>& headers, HttpCallback callback = nullptr) = 0;
+	virtual void post(const QString& path, const QByteArray& data, const QMap<QString, QString>& headers, HttpCallback callback = nullptr) = 0;
+	virtual void get(const QString& path, const QUrlQuery& params, HttpCallback callback = nullptr) = 0;
+	virtual void post(const QString& path, const QByteArray& data, HttpCallback callback = nullptr) = 0;
 signals:
 	void httpTextResponse(const QByteArray& data);
 	void httpDataResponse(const QByteArray& data);

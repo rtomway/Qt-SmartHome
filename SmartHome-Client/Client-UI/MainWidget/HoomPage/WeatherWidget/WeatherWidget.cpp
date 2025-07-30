@@ -10,16 +10,12 @@
 #include "ImageUtil.h"
 
 WeatherWidget::WeatherWidget(QWidget* parent)
-	:QWidget(parent)
-	,ui(new Ui::WeatherWidget)
+	: QWidget(parent)
+	, ui(new Ui::WeatherWidget)
+	, m_updateWeatherTimer(new QTimer(this))
 {
 	ui->setupUi(this);
 	init();
-	QFile file(":/stylesheet/Resource/StyleSheet/WeatherWidget.css");
-	if (file.open(QIODevice::ReadOnly))
-	{
-		this->setStyleSheet(file.readAll());
-	}
 }
 
 WeatherWidget::~WeatherWidget()
@@ -29,48 +25,62 @@ WeatherWidget::~WeatherWidget()
 
 void WeatherWidget::init()
 {
-	this->setStyleSheet(" background-color: red;border:1px,solid,black;");
-	this->setAutoFillBackground(true);
-	this->setObjectName("WeatherWidget");
-	this->setFixedSize(300, 150);
+	initUI();
 	initWeatherIconHash();
-	getWeatherData();
+	fetchWeatherData();
+
+	//半小时更新一次
+	m_updateWeatherTimer->start(std::chrono::minutes(30));
+	connect(m_updateWeatherTimer, &QTimer::timeout, this, &WeatherWidget::fetchWeatherData);
+}
+
+//初始化ui
+void WeatherWidget::initUI()
+{
+	this->setObjectName("WeatherWidget");
+	this->setAttribute(Qt::WA_StyledBackground, true);
+	QFile file(":/stylesheet/Resource/StyleSheet/WeatherWidget.css");
+	if (file.open(QIODevice::ReadOnly))
+	{
+		this->setStyleSheet(file.readAll());
+	}
+
 	ui->locationLab->setText("深圳市龙岗区");
 	ui->temperBtn->setMinimumWidth(130);
-	ui->humdityBtn->setMinimumWidth(130);
+	ui->humidityBtn->setMinimumWidth(130);
 	ui->temperBtn->setIcon(QIcon(":/icon/Resource/Icon/temperature.png"));
-	ui->humdityBtn->setIcon(QIcon(":/icon/Resource/Icon/humdity.png"));
+	ui->humidityBtn->setIcon(QIcon(":/icon/Resource/Icon/humdity.png"));
 }
 
 //初始化weather对应icon
 void WeatherWidget::initWeatherIconHash()
 {
-	m_weatherIconHash["晴天"] = QPixmap(":/picture/Resource/Picture/sun.png");
+	m_weatherIconHash["晴"] = QPixmap(":/picture/Resource/Picture/sun.png");
 	m_weatherIconHash["多云"] = QPixmap(":/picture/Resource/Picture/cloudy.png");
 	m_weatherIconHash["小雨"] = QPixmap(":/picture/Resource/Picture/light_rain.png");
 	m_weatherIconHash["中雨"] = QPixmap(":/picture/Resource/Picture/Moderate_rain.png");
 	m_weatherIconHash["阵雨"] = QPixmap(":/picture/Resource/Picture/Moderate_rain.png");
 	m_weatherIconHash["大雨"] = QPixmap(":/picture/Resource/Picture/heavy_rain.png");
 	m_weatherIconHash["雷阵雨"] = QPixmap(":/picture/Resource/Picture/Thunder_storm.png");
+	m_weatherIconHash["阴"] = QPixmap(":/picture/Resource/Picture/cloudy.png");
 }
 
 //获取天气数据
-void WeatherWidget::getWeatherData()
+void WeatherWidget::fetchWeatherData()
 {
 	//当前地址
-	QUrl url("https://pr3wryuh6r.re.qweatherapi.com/v7/weather/3d");
+	QUrl url("https://pr3wryuh6r.re.qweatherapi.com/v7/weather/now");
 	QUrlQuery query(url);
 	query.addQueryItem("location", "101280606");
 	query.addQueryItem("key", "76f0fb906675488bb67b86667788e7ba");
 
 	//向和风天气发出请求
-	NetWorkServiceLocator::instance()->sendExternalHttpGetRequest(url.toString(), query, QMap<QString, QString>(),
+	NetWorkServiceLocator::instance()->sendExternalHttpGetRequest(url.toString(), query,
 		[this](const QJsonObject& obj, const QByteArray& data)
 		{
 			if (obj["code"].toString().toInt() == 200)
 			{
-				QJsonArray weatherArray = obj["daily"].toArray();
-				m_weartherJson= weatherArray.at(0).toObject();
+				m_weartherJson = obj["now"].toObject();
 				loadWeatherData();
 				updateWeatherUi();
 			}
@@ -80,11 +90,10 @@ void WeatherWidget::getWeatherData()
 //数据更新
 void WeatherWidget::loadWeatherData()
 {
-	m_temperature = m_weartherJson["tempMin"].toString().toInt() / 2 + m_weartherJson["tempMax"].toString().toInt() / 2;
-	m_humdity = m_weartherJson["humidity"].toString().toInt();
-	m_weather = m_weartherJson["textDay"].toString();
+	m_temperature = m_weartherJson["temp"].toString().toInt();
+	m_humidity = m_weartherJson["humidity"].toString().toInt();
+	m_weather = m_weartherJson["text"].toString();
 }
-
 
 //UI更新
 void WeatherWidget::updateWeatherUi()
@@ -102,8 +111,8 @@ void WeatherWidget::updateWeatherUi()
 	}
 	QChar degreeSymbol(0x00B0);
 	ui->localTemperLab->setText(QString(QString::number(m_temperature) + "%1C").arg(degreeSymbol));
-	ui->temperBtn->setText("当前温度:" + QString(QString::number(m_temperature) + "%1C").arg(degreeSymbol));
-	ui->humdityBtn->setText("相对湿度:" + QString(QString::number(m_humdity)+"%"));
-	
+	ui->temperBtn->setText("当天温度:" + QString(QString::number(m_temperature) + "%1C").arg(degreeSymbol));
+	ui->humidityBtn->setText("相对湿度:" + QString(QString::number(m_humidity) + "%"));
+
 }
 
