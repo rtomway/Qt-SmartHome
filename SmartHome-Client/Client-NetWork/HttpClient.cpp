@@ -86,7 +86,7 @@ void HttpClient::setHeaders(QNetworkRequest& request, const QMap<QString, QStrin
 		request.setRawHeader("Authorization", authHeader.toUtf8());
 	}
 	//user_id
-	auto& user_id = LoginUserManager::instance()->get_loginUser_id();
+	auto& user_id = LoginUserManager::instance()->getLoginUserId();
 	request.setRawHeader("user_id", user_id.toUtf8());
 }
 
@@ -164,14 +164,5 @@ void HttpClient::replyDataHandle(QNetworkReply* reply, HttpCallback callBack)
 		return;
 	}
 
-	//信号传出处理
-	if (contentType.contains("application/json"))
-	{
-		emit httpTextResponse(responseData);
-	}
-	else
-	{
-		emit httpDataResponse(responseData);
-	}
 }
 

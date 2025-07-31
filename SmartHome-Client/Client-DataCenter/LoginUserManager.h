@@ -14,12 +14,13 @@ private:
 	LoginUserManager(const LoginUserManager&) = delete;
 	LoginUserManager& operator=(const LoginUserManager&) = delete;
 public:
-	//当前登录用户
-	void onInitLoginUser(const QJsonObject& loginUserObj);
-	const QString& get_loginUser_id()const;
-	const QString& get_loginUser_name()const;
+	const QString& getLoginUserId()const;
+	const QString& getLoginUserName()const;
 	//清除
 	void clearLoginUserManager();
+private:
+	void onInitLoginUser(const QJsonObject& loginUserObj);
+	void onLoginValidationSuccess(const QJsonObject& loginUserObj);
 private:
 	//当前登录用户
 	QString m_loginUser_id;

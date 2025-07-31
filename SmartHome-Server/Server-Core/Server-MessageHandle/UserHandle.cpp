@@ -3,30 +3,10 @@
 #include <QJsonDocument>
 
 #include "DataBaseQuery.h"
-#include "ConnectionManager.h"
 #include "ImageUtil.h"
 #include "PacketCreate.h"
 #include "UserDBUtils.h"
-
-//查询user信息
-void UserHandle::handle_queryUser(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder)
-{
-	auto query_id = paramsObj["query_id"].toString();
-	auto user_id = paramsObj["user_id"].toString();
-	DataBaseQuery query;
-	auto queryUserObj = UserDBUtils::queryUserDetail(query_id, query);
-	if (queryUserObj.contains("error"))
-	{
-
-	}
-	QByteArray userData;
-	auto packet = PacketCreate::binaryPacket("queryUser", queryUserObj.toVariantMap(), QByteArray());
-	PacketCreate::addPacket(userData, packet);
-	auto allData = PacketCreate::allBinaryPacket(userData);
-	QByteArray mimeType = "application/octet-stream";
-	responder.write(allData, mimeType);
-}
-
+#include "SResultCode.h"
 
 //用户修改密码
 void UserHandle::handle_passwordChange(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder)
@@ -53,27 +33,24 @@ void UserHandle::handle_passwordChange(const QJsonObject& paramsObj, const QByte
 
 		});
 
-	// 创建响应数据，包含 token
-	QJsonObject changeObj;
-
+	// 返回响应给客户端
+	QJsonObject allData;
+	allData["type"] = "passwordChange";
+	allData["params"] = "";
 	//密保错误直接返回
 	if (!queryResult && !confidential_isRight)
 	{
-		changeObj["error"] = true;
+		SResult::addFailuresCode(allData, SResultCode::UserConfidentialError);
 	}
 	//服务器操作出错
 	if (!queryResult && confidential_isRight)
 	{
-		changeObj["error"] = true;
+		SResult::addFailuresCode(allData, SResultCode::ServerSqlInnerError);
 	}
 	if (queryResult && confidential_isRight)
 	{
-		changeObj["error"] = false;
+		SResult::addFailuresCode(allData, SResultCode::Success);
 	}
-	// 返回响应给客户端
-	QJsonObject allData;
-	allData["type"] = "passwordChange";
-	allData["params"] = changeObj;
 
 	QJsonDocument responseDoc(allData);
 	responder.write(responseDoc);
@@ -93,10 +70,10 @@ void UserHandle::handle_updateUserAvatar(const QJsonObject& paramsObj, const QBy
 	}
 	//图片保存
 	ImageUtils::saveAvatarToLocal(image, user_id);
-	//转发头像信息
-	//数据打包
-	auto userPacket = PacketCreate::binaryPacket("updateUserAvatar", paramsObj.toVariantMap(), data);
-	QByteArray userData;
-	PacketCreate::addPacket(userData, userPacket);
-	auto allData = PacketCreate::allBinaryPacket(userData);
+
+	QJsonObject responseObj;
+	SResult::addSuccessCode(responseObj, SResultCode::Success);
+
+	QJsonDocument responsedoc(responseObj);
+	responder.write(responsedoc);
 }

@@ -2,8 +2,7 @@
 
 # 创建一个静态库或者共享库
 add_library(Server-NetWork STATIC
-        HttpRouteManager.h    HttpRouteManager.cpp
-        ConnectionManager.h   ConnectionManager.cpp 
+        HttpRouteManager.h    HttpRouteManager.cpp   
         Server.h  Server.cpp
 )
 

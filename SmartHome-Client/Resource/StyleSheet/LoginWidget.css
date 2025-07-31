@@ -3,7 +3,7 @@ QWidget#login {
     border: none;
     border-radius: 10px;
     border-image: url(":/picture/Resource/Picture/login_1.png");
-    color:white;
+    color: white;
 }
 
 QPushButton#loginBtn {

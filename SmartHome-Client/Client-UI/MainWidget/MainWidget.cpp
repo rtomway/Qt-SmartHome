@@ -2,13 +2,13 @@
 #include "ui_MainWidget.h"
 #include <QFile>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 
 #include "ImageUtil.h"
 #include "../Client-ServiceLocator/NetWorkServiceLocator.h"
 #include "LoginUserManager.h"
 #include "PacketCreate.h"
+#include "myMessageBox/myMessageBox.h"
 
 
 MainWidget::MainWidget(QWidget* parent)
@@ -157,7 +157,6 @@ void MainWidget::changeAvatar()
 //账号退出
 void MainWidget::onExitAccount()
 {
-	NetWorkServiceLocator::instance()->disConnect();
 	emit quitSuccess();
 }
 
@@ -200,7 +199,7 @@ bool MainWidget::eventFilter(QObject* watched, QEvent* event)
 			if (avatar.isNull())
 			{
 				// 头像加载失败，给出提示
-				QMessageBox::warning(this, "错误", "无法加载图片，选择的文件不是有效的头像图片。");
+				MyMessageBox box(this, "错误", "无法加载图片，选择的文件不是有效的头像图片");
 				return false;  // 如果头像无效，返回 false
 			}
 			ui->headLab->setPixmap(ImageUtils::roundedPixmap(avatar, QSize(60, 60)));

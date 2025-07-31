@@ -9,6 +9,7 @@ class EventBus :public QObject
 	Q_OBJECT
 public:
 	static EventBus* instance();
+
 	EventBus(const EventBus&) = delete;
 	EventBus& operator=(const EventBus&) = delete;
 private:

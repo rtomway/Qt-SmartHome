@@ -3,7 +3,6 @@
 
 #include <QImage>
 #include <QSize>
-#include "GlobalTypes.h"
 
 class ImageUtils {
 public:

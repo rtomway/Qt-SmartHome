@@ -1,43 +1,16 @@
 ﻿#include "NetWorkService.h"
 
-NetWorkService::NetWorkService(WebClientPort* webClientPort, HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort,QObject* parent)
-	: m_webClientPort(webClientPort)
+NetWorkService::NetWorkService(HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort,QObject* parent)
+	: QObject(parent)
 	, m_httpClientPort(httpClientPort)
 	, m_externalHttpClientPort(externalHttpClientPort)
-	, m_messageHandle(new MessageHandle(this))
 {
-	init();
+	
 }
 
 NetWorkService::~NetWorkService()
 {
 
-}
-
-//连接web服务器
-void NetWorkService::connectToServer(std::function<void()>callBack)
-{
-	m_webClientPort->connectToServer("ws://localhost:8888", [callBack]
-		{
-			if (callBack)
-				callBack();
-		});
-}
-
-//断开连接
-void NetWorkService::disConnect()
-{
-	m_webClientPort->disconnect();
-}
-
-//web发送
-void NetWorkService::sendWebTextMessage(const QString& message)
-{
-	m_webClientPort->sendTextMessage(message);
-}
-void NetWorkService::sendWebBinaryData(const QByteArray& data)
-{
-	m_webClientPort->sendBinaryData(data);
 }
 
 //http内部请求
@@ -69,11 +42,3 @@ void NetWorkService::sendExternalHttpGetRequest(const QString& path, const QUrlQ
 	m_externalHttpClientPort->get(path, params,callback);
 }
 
-void NetWorkService::init()
-{
-	//接收消息
-	connect(m_webClientPort, &WebClientPort::textMessage, m_messageHandle, &MessageHandle::handle_textMessage);
-	connect(m_webClientPort, &WebClientPort::binaryData, m_messageHandle, &MessageHandle::handle_binaryData);
-	connect(m_httpClientPort, &HttpClientPort::httpTextResponse, m_messageHandle, &MessageHandle::handle_textMessage);
-	connect(m_httpClientPort, &HttpClientPort::httpDataResponse, m_messageHandle, &MessageHandle::handle_binaryData);
-}

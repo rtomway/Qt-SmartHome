@@ -7,9 +7,7 @@ class TokenManager
 {
 public:
 	static void saveToken(const QString& token);
-	static const QString& getToken();
-private:
-	static QString m_token;
+	static QString getToken();
 };
 
 #endif // !TOKENMANAGER_H_

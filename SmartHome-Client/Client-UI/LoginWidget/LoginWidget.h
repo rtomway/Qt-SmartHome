@@ -17,12 +17,13 @@ public:
 	LoginWidget( QWidget* parent = nullptr);
 private:
 	void init();
+	void initUi();
 private:
 	void onLoginRequest();
 	void onRegister();
 	void onForgetPassword();
 	void onLoginSuccess();
-
+	void onRegisterSuccess(const QJsonObject&obj);
 private:
 	Ui::LoginWidget* ui;
 signals:

@@ -14,6 +14,7 @@ public:
 	~PassWordChangePage();
 private:
 	void init();
+	void initUi();
 	void onPasswordVisable();
 	void onChangePassword();
 private:

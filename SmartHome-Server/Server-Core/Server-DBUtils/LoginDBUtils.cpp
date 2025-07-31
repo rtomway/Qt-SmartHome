@@ -23,6 +23,7 @@ bool LoginDBUtils::validationPassWord(const QString& user_id, const QString& pas
 	}
 	auto passwordObj = dataArray.at(0).toObject();
 	auto queryPassWord = passwordObj["password"].toString();
+	qDebug() << "密码:" << queryPassWord << password;
 	if (queryPassWord == password)
 	{
 		return true;
@@ -33,13 +34,11 @@ bool LoginDBUtils::validationPassWord(const QString& user_id, const QString& pas
 //注册插入新用户
 bool LoginDBUtils::insertUser(const RegisterMessage& registerMessage, DataBaseQuery& query, std::shared_ptr<QSqlQuery> queryPtr)
 {
-	QString queryStr = QString("insert into user (user_id,user_name,password,avatar_path,confidential)values(?,?,?,?,?)");
-	auto avatarPath = ImageUtils::getUserAvatarFolderPath() + "/" + registerMessage.user_id + ".png";
+	QString queryStr = QString("insert into user (user_id,user_name,password,confidential)values(?,?,?,?)");
 	QVariantList bindValues;
 	bindValues.append(registerMessage.user_id);
 	bindValues.append(registerMessage.username);
 	bindValues.append(registerMessage.password);
-	bindValues.append(avatarPath);
 	bindValues.append(registerMessage.confidential);
 	auto insertResult = query.executeNonQuery(queryStr, bindValues,queryPtr);
 	if (!insertResult)

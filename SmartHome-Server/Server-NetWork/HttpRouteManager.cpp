@@ -12,6 +12,7 @@ HttpRouteManager::HttpRouteManager(QHttpServer* server, QObject* parent)
 void HttpRouteManager::setupRoutes()
 {
 	registerHttpRoute("/loginValidation");
+	registerHttpRoute("/login");
 	registerHttpRoute("/register");
 	registerHttpRoute("/updateUserAvatar");
 	registerHttpRoute("/passwordChange");

@@ -8,9 +8,7 @@
 class UserHandle
 {
 public:
-	static void handle_queryUser(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder);
 	static void handle_updateUserAvatar(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder);
-	static void handle_updateUserMessage(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder);
 	static void handle_passwordChange(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder);
 };
 

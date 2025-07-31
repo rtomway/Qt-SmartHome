@@ -1,10 +1,13 @@
 ﻿#include "PassWordChangePage.h"
 #include "ui_PassWordChangePage.h"
 #include <QFile>
-#include <QMessageBox>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTimer>
 
+#include "../Client-ServiceLocator/NetWorkServiceLocator.h"
+#include "EventBus.h"
+#include "myMessageBox/myMessageBox.h"
 
 PassWordChangePage::PassWordChangePage(QWidget* parent)
 	:QWidget(parent)
@@ -12,12 +15,6 @@ PassWordChangePage::PassWordChangePage(QWidget* parent)
 {
 	ui->setupUi(this);
 	init();
-	QFile file(":/stylesheet/Resource/StyleSheet/PasswordChangePage.css");
-	if (file.open(QIODevice::ReadOnly))
-	{
-		this->setStyleSheet(file.readAll());
-	}
-	
 }
 
 PassWordChangePage::~PassWordChangePage()
@@ -27,10 +24,34 @@ PassWordChangePage::~PassWordChangePage()
 
 void PassWordChangePage::init()
 {
+	initUi();
+
+	//密码可视
+	connect(ui->visableBtn, &QPushButton::clicked, this, &PassWordChangePage::onPasswordVisable);
+	//取消返回
+	connect(ui->cancelBtn, &QPushButton::clicked, this, &PassWordChangePage::hide);
+	//修改密码
+	connect(ui->okBtn, &QPushButton::clicked, this, &PassWordChangePage::onChangePassword);
+
+}
+
+//ui初始化
+void PassWordChangePage::initUi()
+{
 	this->setFixedSize(700, 400);
 	this->setObjectName("PassWordChangePage");
 	this->setWindowIconText("密码修改");
-	
+	this->setAttribute(Qt::WA_StyledBackground, true);
+	QFile file(":/stylesheet/Resource/StyleSheet/PasswordChangePage.css");
+	if (file.open(QIODevice::ReadOnly))
+	{
+		this->setStyleSheet(file.readAll());
+	}
+	else
+	{
+		qDebug() << "stylesheet failed";
+	}
+
 	ui->accountEdit->setPlaceholderText("账号输入");
 	ui->confidentialEdit->setPlaceholderText("密保输入");
 	ui->passwordEdit->setPlaceholderText("输入新密码");
@@ -40,14 +61,6 @@ void PassWordChangePage::init()
 	ui->accountEdit->setFixedWidth(200);
 	ui->confidentialEdit->setFixedWidth(200);
 	ui->passwordEdit->setFixedWidth(200);
-
-	//密码可视
-	connect(ui->visableBtn, &QPushButton::clicked, this, &PassWordChangePage::onPasswordVisable);
-	//取消返回
-	connect(ui->cancelBtn, &QPushButton::clicked, this, &PassWordChangePage::hide);
-	//修改密码
-	connect(ui->okBtn, &QPushButton::clicked, this, &PassWordChangePage::onChangePassword);
-
 }
 
 //密码可视
@@ -69,19 +82,20 @@ void PassWordChangePage::onPasswordVisable()
 //修改密码
 void PassWordChangePage::onChangePassword()
 {
+	
 	if (ui->accountEdit->text().isEmpty())
 	{
-		QMessageBox::warning(this, "警告", "账号不能为空");
+		MyMessageBox box(this, "警告", "账号不能为空",500);
 		return;
 	}
 	if (ui->passwordEdit->text().isEmpty())
 	{
-		QMessageBox::warning(this, "警告", "个人密保不能为空");
+		MyMessageBox box(this, "警告", "个人密保不能为空",500);
 		return;
 	}
 	if (ui->passwordEdit->text().isEmpty())
 	{
-		QMessageBox::warning(this, "警告", "密码不能为空");
+		MyMessageBox box(this, "警告", "密码不能为空",500);
 		return;
 	}
 
@@ -92,23 +106,22 @@ void PassWordChangePage::onChangePassword()
 	passwordChangeObj["confidential"] = ui->confidentialEdit->text();
 	QJsonDocument doc(passwordChangeObj);
 	auto data = doc.toJson(QJsonDocument::Compact);
-	/*NetWorkServiceLocator::instance()->sendHttpRequest("passwordChange", data, "application/json",
+
+	NetWorkServiceLocator::instance()->sendHttpPostRequest("passwordChange", data,
 		[this](const QJsonObject& obj, const QByteArray& data)
 		{
 			auto changeObj = obj["params"].toObject();
-			auto error = changeObj["error"].toBool();
-			qDebug() << "error:" << error;
-			if (error)
+			auto code= obj["code"].toInt();
+			if (code==0)
 			{
-				QMessageBox::warning(this, "错误", "账号或个人密保错误");
-				return;
-			}
-			else
-			{
-				QMessageBox::information(this, "成功", "密码修改成功");
+				MyMessageBox box(this, "成功", "密码修改成功",500);
 				this->hide();
 				EventBus::instance()->emit passwordChangeSuccess();
 			}
+			else
+			{
+				MyMessageBox box(this, "错误", obj["message"].toString(), 500);
+			}
 
-		});*/
+		});
 }

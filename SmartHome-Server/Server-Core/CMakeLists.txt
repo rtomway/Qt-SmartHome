@@ -4,8 +4,7 @@
 add_library(Server-Core STATIC
   MessageHandle.h     MessageHandle.cpp
 
-  Server-MessageHandle/LoginHandle.h        Server-MessageHandle/LoginHandle.cpp
-  Server-MessageHandle/RegisterHandle.h     Server-MessageHandle/RegisterHandle.cpp
+  Server-MessageHandle/LoginHandle.h        Server-MessageHandle/LoginHandle.cpp 
   Server-MessageHandle/UserHandle.h         Server-MessageHandle/UserHandle.cpp
  
   Server-DBUtils/LoginDBUtils.h     Server-DBUtils/LoginDBUtils.cpp

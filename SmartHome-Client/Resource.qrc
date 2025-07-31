@@ -9,6 +9,8 @@
         <file>Resource/Picture/light_rain.png</file>
         <file>Resource/Picture/Moderate_rain.png</file>
         <file>Resource/Picture/Thunder_storm.png</file>
+        <file>Resource/Picture/register.jpg</file>
+        <file>Resource/Picture/passwordChange.jpg</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>

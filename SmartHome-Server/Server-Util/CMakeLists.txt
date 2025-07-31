@@ -4,10 +4,10 @@ add_library(Server-Util STATIC
     
      
     CreateId.h   CreateId.cpp
-    GlobalTypes.h
+    
     PacketCreate.h
     PacketCreate.cpp
- "ImageUtil.h" "ImageUtil.cpp")
+ "ImageUtil.h" "ImageUtil.cpp" "SResultCode.h")
 
 #库
 #find_package(Qt6 REQUIRED COMPONENTS Core Sql WebSockets)
