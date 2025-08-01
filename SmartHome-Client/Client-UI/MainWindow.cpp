@@ -20,10 +20,12 @@ MainWindow::MainWindow(QWidget* parent)
 	this->setWindowFlag(Qt::FramelessWindowHint);
 	//显示需要刷新背景颜色 否则跟随父窗口背景色
 	m_loginWidget->setAutoFillBackground(true);
+
 }
 
 void MainWindow::init()
 {
+
 	setMaximumSize(m_loginWidget->size());
 	resize(m_loginWidget->size());
 	m_stackedWidget->addWidget(m_loginWidget);

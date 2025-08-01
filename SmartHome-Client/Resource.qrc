@@ -11,6 +11,9 @@
         <file>Resource/Picture/Thunder_storm.png</file>
         <file>Resource/Picture/register.jpg</file>
         <file>Resource/Picture/passwordChange.jpg</file>
+        <file>Resource/Picture/allLightOff.png</file>
+        <file>Resource/Picture/allLightOn.png</file>
+        <file>Resource/Picture/hoomBackground.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>
@@ -18,7 +21,6 @@
         <file>Resource/StyleSheet/RegisterPage.css</file>
         <file>Resource/StyleSheet/PasswordChangePage.css</file>
         <file>Resource/StyleSheet/HoomPage.css</file>
-        <file>Resource/StyleSheet/WeatherWidget.css</file>
     </qresource>
     <qresource prefix="/icon">
         <file>Resource/Icon/x.png</file>

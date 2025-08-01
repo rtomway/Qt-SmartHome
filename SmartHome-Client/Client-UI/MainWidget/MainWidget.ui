@@ -21,7 +21,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>44</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -36,7 +36,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="sideWidget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="3,3,7,7,2">
       <property name="spacing">
        <number>0</number>

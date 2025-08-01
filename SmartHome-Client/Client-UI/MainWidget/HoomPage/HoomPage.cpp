@@ -4,6 +4,7 @@
 #include <QFile>
 
 
+
 HoomPage::HoomPage(QWidget* parent)
 	: QWidget(parent)
 	, ui(new Ui::HoomPage)
@@ -26,6 +27,9 @@ void HoomPage::init()
 	//更新时钟(每分钟)
 	m_timer->start(std::chrono::minutes(1));
 	connect(m_timer, &QTimer::timeout, this, &HoomPage::onUpdateCurrentTime);
+
+	//灯光控制
+	connect(m_lightContralCard, &DeviceContralCard::SwitchState, this, &HoomPage::onLightStateChanged);
 }
 
 void HoomPage::initUi()
@@ -51,6 +55,9 @@ void HoomPage::initUi()
 	ui->weatherWidget->layout()->addWidget(m_weatherWidget);
 	ui->weatherWidget->setFixedSize(300, 150);
 
+	addLightCard();
+	ui->lightCardWidget->layout()->addWidget(m_lightContralCard);
+
 }
 
 //更新当前时间
@@ -61,5 +68,19 @@ void HoomPage::onUpdateCurrentTime()
 	ui->dateLab->setText(time.toString("MM-dd"));
 	QLocale local("zh_CN");
 	ui->weekLab->setText(local.toString(time, "dddd"));
+}
+
+//所有灯光一键控制
+void HoomPage::onLightStateChanged(bool state)
+{
+
+}
+
+
+void HoomPage::addLightCard()
+{
+	QPixmap onPixmap(":/picture/Resource/Picture/allLightOn.png");
+	QPixmap offPixmap(":/picture/Resource/Picture/allLightOff.png");
+	m_lightContralCard = new DeviceContralCard("所有灯光", onPixmap, offPixmap, this);
 }
 

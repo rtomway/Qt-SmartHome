@@ -15,7 +15,7 @@
 
 
 LoginWidget::LoginWidget(QWidget* parent)
-	: AngleRoundedWidget(parent)
+	: MaskBackgroundWidget(parent)
 	, ui(new Ui::LoginWidget)
 {
 	ui->setupUi(this);
@@ -49,6 +49,8 @@ void LoginWidget::initUi()
 {
 	this->setObjectName("login");
 	this->setWindowFlag(Qt::FramelessWindowHint);
+	//设置蒙层背景图片
+	this->setBackground(QPixmap(":/picture/Resource/Picture/login_1.png"), QColor(50, 50, 50, 65));
 	setFixedSize(720, 480);
 	this->setAttribute(Qt::WA_StyledBackground, true);
 	QFile file(":/stylesheet/Resource/StyleSheet/LoginWidget.css");

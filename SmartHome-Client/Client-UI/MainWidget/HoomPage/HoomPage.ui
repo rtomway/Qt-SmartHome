@@ -174,7 +174,10 @@
       </property>
       <item>
        <layout class="QGridLayout" name="gridLayout" rowstretch="1,1" columnstretch="1,1,1">
-        <property name="spacing">
+        <property name="horizontalSpacing">
+         <number>20</number>
+        </property>
+        <property name="verticalSpacing">
          <number>0</number>
         </property>
         <item row="1" column="1">
@@ -187,12 +190,25 @@
          <widget class="QWidget" name="widget_9" native="true"/>
         </item>
         <item row="0" column="1">
-         <widget class="QWidget" name="widget_6" native="true">
+         <widget class="QWidget" name="lightCardWidget" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <widget class="QWidget" name="widget_11" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_8"/>
-            </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_8"/>
            </item>
           </layout>
          </widget>

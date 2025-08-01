@@ -39,11 +39,17 @@ void WeatherWidget::initUI()
 {
 	this->setObjectName("WeatherWidget");
 	this->setAttribute(Qt::WA_StyledBackground, true);
-	QFile file(":/stylesheet/Resource/StyleSheet/WeatherWidget.css");
-	if (file.open(QIODevice::ReadOnly))
-	{
-		this->setStyleSheet(file.readAll());
-	}
+	this->setStyleSheet(R"(  
+		QWidget#WeatherWidget
+		{
+			border: 1px solid  rgb(77, 150, 205);
+			border-radius: 10px;
+			background-color: rgb(167, 214, 250);
+		}
+	)");
+	ui->localTemperLab->setStyleSheet(R"( font-size: 26px;)");
+	ui->temperBtn->setStyleSheet(R"( background-color: transparent;)");
+	ui->humidityBtn->setStyleSheet(R"( background-color: transparent;)");
 
 	ui->locationLab->setText("深圳市龙岗区");
 	ui->temperBtn->setMinimumWidth(130);

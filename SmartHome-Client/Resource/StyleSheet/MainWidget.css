@@ -1,7 +1,13 @@
 ﻿/*窗口*/
 QWidget#MainWidget {
     background-color: rgb(239, 254, 254);
-    border: none;
+    border: 0px;
+    border-radius: 10px;
+}
+
+QWidget#sideWidget {
+    background-color:rgba(174, 172, 172, 0.37);
+    border: 0px;
     border-radius: 10px;
 }
 

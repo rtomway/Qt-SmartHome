@@ -14,6 +14,8 @@
 #include "DevicePage.h"
 #include "RoomPage.h"
 
+#include "MaskBackgroundWidget/MaskBackgroundWidget.h"
+
 namespace Ui { class MainWidget; }
 
 enum PageBtn
@@ -23,7 +25,7 @@ enum PageBtn
 	ROOMPAGE
 };
 
-class MainWidget :public AngleRoundedWidget
+class MainWidget :public MaskBackgroundWidget
 {
 	Q_OBJECT
 public:

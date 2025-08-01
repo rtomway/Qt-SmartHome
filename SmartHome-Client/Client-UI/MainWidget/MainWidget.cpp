@@ -12,7 +12,7 @@
 
 
 MainWidget::MainWidget(QWidget* parent)
-	:AngleRoundedWidget(parent)
+	:MaskBackgroundWidget(parent)
 	, ui(new Ui::MainWidget)
 	, m_pageBtnGroup(new QButtonGroup(this))
 	, m_hoomPage(new HoomPage(this))
@@ -59,6 +59,10 @@ void MainWidget::init()
 void MainWidget::initUi()
 {
 	this->setObjectName("MainWidget");
+	//设置蒙层背景图片
+	this->setBackground(QPixmap(":/picture/Resource/Picture/hoomBackground.png"), QColor(50, 50, 50, 130));
+	this->setWidgetRadius(12);
+	this->setContentsMargins(0, 0, 0, 0);
 	this->setAttribute(Qt::WA_StyledBackground, true);
 	QFile file(":/stylesheet/Resource/StyleSheet/MainWidget.css");
 	if (file.open(QIODevice::ReadOnly))

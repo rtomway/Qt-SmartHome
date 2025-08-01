@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QTimer>
-#include "WeatherWidget.h"
+
+#include "CustomCard/WeatherWidget/WeatherWidget.h"
+#include "CustomCard/deviceControlCard/deviceContralCard.h"
 
 namespace Ui { class HoomPage; }
 
@@ -16,11 +18,15 @@ public:
 private:
 	void init();
 	void initUi();
+	void addLightCard();
+private:
+	void onLightStateChanged(bool state);
 	void onUpdateCurrentTime();
 private:
 	Ui::HoomPage* ui;
 	QTimer* m_timer;
 	WeatherWidget* m_weatherWidget;
+	DeviceContralCard* m_lightContralCard;
 };
 
 #endif // !HOOMPAGE_H_

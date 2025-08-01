@@ -7,10 +7,12 @@
 #include "RegisterPage.h"
 #include "PassWordChangePage.h"
 
+#include "MaskBackgroundWidget/MaskBackgroundWidget.h"
+
 
 namespace Ui {class LoginWidget; }
 
-class LoginWidget :public AngleRoundedWidget
+class LoginWidget :public MaskBackgroundWidget
 {
 	Q_OBJECT 
 public:
