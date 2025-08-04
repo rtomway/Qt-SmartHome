@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("F:/Vcpkg/vcpkg-master/installed/x64-windows/include")
 
 #外部库(主cmake find 子模块无需find)
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets  Network)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets  Network Mqtt)
 find_package(fmt REQUIRED)
 
 
@@ -48,7 +48,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	Client-NetWork  Client-DataCenter
 	Client-UI Client-Util 
 	Qt6::Core Qt6::Widgets Qt6::Network			
-	fmt::fmt
+	fmt::fmt  Qt6::Mqtt
 )
 
 # 添加构建后命令：复制所需的 DLL 文件到可执行文件目录

@@ -1,11 +1,13 @@
 ﻿#include "NetWorkService.h"
 
-NetWorkService::NetWorkService(HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort,QObject* parent)
+
+NetWorkService::NetWorkService(MqttClient* mqttClient, HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort, QObject* parent)
 	: QObject(parent)
+	, m_mqttClient(mqttClient)
 	, m_httpClientPort(httpClientPort)
 	, m_externalHttpClientPort(externalHttpClientPort)
 {
-	
+
 }
 
 NetWorkService::~NetWorkService()
@@ -39,6 +41,17 @@ void NetWorkService::sendExternalHttpGetRequest(const QString& path, const QUrlQ
 }
 void NetWorkService::sendExternalHttpGetRequest(const QString& path, const QUrlQuery& params, HttpCallback callback)
 {
-	m_externalHttpClientPort->get(path, params,callback);
+	m_externalHttpClientPort->get(path, params, callback);
 }
 
+//mqtt连接onenet
+void NetWorkService::connectToOnenet()
+{
+	m_mqttClient->init();
+}
+
+//mqtt断开onenet的连接
+void NetWorkService::disConnectWithOnenet()
+{
+	m_mqttClient->disconnected();
+}

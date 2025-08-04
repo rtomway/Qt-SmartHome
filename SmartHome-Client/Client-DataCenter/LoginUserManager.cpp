@@ -58,11 +58,15 @@ void LoginUserManager::onLoginValidationSuccess(const QJsonObject& paramsObject)
 					{
 						this->onInitLoginUser(obj);
 					});
+
+				//连接onenet同步硬件数据
+				NetWorkServiceLocator::instance()->connectToOnenet();
 			}
 			else
 			{
 				MyMessageBox box(nullptr, "错误", obj["message"].toString());
 			}
+
 		});
 
 }

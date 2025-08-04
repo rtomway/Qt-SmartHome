@@ -11,12 +11,13 @@ Server::Server(QObject* parent)
 		m_httpServer = new QHttpServer(this);
 	}
 	m_httpServer->listen(QHostAddress::Any, 8889);
+	
 	m_httpRouteManager = new HttpRouteManager(m_httpServer);
 }
 
 Server::~Server()
 {
-	
+
 }
 
 
