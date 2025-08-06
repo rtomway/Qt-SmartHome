@@ -1,0 +1,103 @@
+﻿#include "DevicePage.h"
+#include "ui_DevicePage.h"
+
+#include <QJsonObject>
+#include <QJsonDocument>
+
+#include "../Client-ServiceLocator/NetWorkServiceLocator.h"
+#include "EventBus.h"
+
+DevicePage::DevicePage(QWidget* parent)
+	:QWidget(parent)
+	, ui(new Ui::DevicePage)
+{
+	ui->setupUi(this);
+	init();
+}
+
+DevicePage::~DevicePage()
+{
+
+}
+
+void DevicePage::init()
+{
+	QPixmap hallOnPixmap(":/picture/Resource/Picture/hallLighton.png");
+	QPixmap hallOffPixmap(":/picture/Resource/Picture/hallLightoff.png");
+	m_hallLight = new DeviceContralCard("大厅主灯", hallOnPixmap, hallOffPixmap, this);
+
+	QPixmap bathOnPixmap(":/picture/Resource/Picture/bathLighton.png");
+	QPixmap bathOffPixmap(":/picture/Resource/Picture/bathLightoff.png");
+	m_bathroomLight = new DeviceContralCard("浴室灯光", bathOnPixmap, bathOffPixmap, this);
+
+	QPixmap bedOnPixmap(":/picture/Resource/Picture/bedLighton.png");
+	QPixmap bedOffPixmap(":/picture/Resource/Picture/bedLightoff.png");
+	m_bedroomLight = new DeviceContralCard("卧室吊灯", bedOnPixmap, bedOffPixmap, this);
+
+	ui->hallLightControl->layout()->addWidget(m_hallLight);
+	ui->bedroomLightControl->layout()->addWidget(m_bedroomLight);
+	ui->bathroomLightControl->layout()->addWidget(m_bathroomLight);
+
+	//灯光控制
+	connect(m_hallLight, &DeviceContralCard::SwitchState, this, &DevicePage::onHallLightChange);
+	connect(m_bedroomLight, &DeviceContralCard::SwitchState, this, &DevicePage::onBedRoomLightChange);
+	connect(m_bathroomLight, &DeviceContralCard::SwitchState, this, &DevicePage::onBathRoomLightChange);
+
+	connect(EventBus::instance(), &EventBus::allLightControl, this, &DevicePage::onAllLightStateChanged);
+}
+
+void DevicePage::onHallLightChange(bool state)
+{
+	sendLightCmd("hall_light", state);
+}
+
+void DevicePage::onBedRoomLightChange(bool state)
+{
+	sendLightCmd("bedroom_light", state);
+}
+
+void DevicePage::onBathRoomLightChange(bool state)
+{
+	sendLightCmd("bathroom_light", state);
+}
+
+//和总灯光控制同步
+void DevicePage::onAllLightStateChanged(bool state)
+{
+	m_lightCount = state ? 3 : 0;
+	qDebug() << "m_lightCount:" << m_lightCount;
+	m_hallLight->setSwitchState(state);
+	m_bathroomLight->setSwitchState(state);
+	m_bedroomLight->setSwitchState(state);
+}
+
+//发送灯光指令
+void DevicePage::sendLightCmd(const QString& device, bool state)
+{
+	auto topic = "smartHome/cmd";
+	QJsonObject lightObj;
+	lightObj[device] = state ? "on" : "off";
+	qDebug() << state << lightObj;
+	QJsonDocument lightDoc(lightObj);
+	auto message = lightDoc.toJson(QJsonDocument::Compact);
+
+	if (state)
+	{
+		m_lightCount++;
+	}
+	else
+	{
+		m_lightCount--;
+	}
+	qDebug() << "m_lightCount:" << m_lightCount;
+	if (m_lightCount == 3)
+	{
+		emit EventBus::instance()->allLightControl(true);
+	}
+	else if (m_lightCount == 0)
+	{
+		emit EventBus::instance()->allLightControl(false);
+	}
+
+	NetWorkServiceLocator::instance()->publishCmd(topic, message);
+}
