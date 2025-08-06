@@ -8,3 +8,7 @@
 主页界面
 
 <img src="ResultPicture/homePage.png" alt="Example Image" width="600" height="480">
+
+设备控制界面
+
+<img src="ResultPicture/devicePage.png" alt="Example Image" width="600" height="480">
