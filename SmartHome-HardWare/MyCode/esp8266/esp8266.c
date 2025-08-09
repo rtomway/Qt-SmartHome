@@ -6,7 +6,6 @@
 #include "oled/oled.h"
 
 
-#define  ESP8266_BUFFER_SIZE  256
 #define  ESP8266_RECEIVE_TIMEOUT 1000
 
 char esp8266_receive_data[ESP8266_BUFFER_SIZE] = {0};
@@ -16,7 +15,7 @@ int esp8266_mqttState = 0;
 HAL_StatusTypeDef esp8266_init(void)
 {
     //检查esp8266是否正常工作
-    esp8266_at_query("AT");
+    esp8266_init_atCmd("AT");
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         return HAL_ERROR;
@@ -51,7 +50,7 @@ HAL_StatusTypeDef esp8266_wifi_checkandReCon(void)
 {
     int wifiConState = 0;
     // 查询WiFi连接状态
-    esp8266_at_query("AT+CWSTATE?");
+    esp8266_init_atCmd("AT+CWSTATE?");
 
     // 处于连接状态
     if (strstr(esp8266_receive_data, "OK") != NULL)
@@ -97,7 +96,7 @@ HAL_StatusTypeDef esp8266_wifi_checkandReCon(void)
 HAL_StatusTypeDef esp8266_wifi_connect(void)
 {
     //设置sta模式
-    esp8266_at_query("AT+CWMODE=1");
+    esp8266_init_atCmd("AT+CWMODE=1");
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         return HAL_ERROR;
@@ -110,7 +109,7 @@ HAL_StatusTypeDef esp8266_wifi_connect(void)
     char wifiConnCmd[100];
     sprintf(wifiConnCmd, "AT+CWJAP=\"%s\",\"%s\"", wifiConnCfg.ssid, wifiConnCfg.password);
 
-    esp8266_at_query(wifiConnCmd);
+    esp8266_init_atCmd(wifiConnCmd);
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         return HAL_ERROR;
@@ -128,7 +127,7 @@ HAL_StatusTypeDef esp8266_wifi_connect(void)
  */
 HAL_StatusTypeDef esp8266_mqtt_checkandReCon(void)
 {
-    esp8266_at_query("AT+MQTTCONN?");
+    esp8266_init_atCmd("AT+MQTTCONN?");
     // 解析MQTT连接状态
     esp8266_mqttState = esp8266_receive_data[26] - '0';
     //已连接
@@ -171,7 +170,7 @@ HAL_StatusTypeDef esp8266_mqtt_connect(void)
     sprintf(mqttUserCmd, "AT+MQTTUSERCFG=0,%d,\"%s\",\"%s\",\"%s\",0,0,\"\"",
             mqttUserCfg.scheme, mqttUserCfg.clientId, mqttUserCfg.username, mqttUserCfg.password);
 
-    esp8266_at_query(mqttUserCmd);
+    esp8266_init_atCmd(mqttUserCmd);
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         OLED_ShowString(2, 0, "MQTT User Failed");
@@ -188,7 +187,7 @@ HAL_StatusTypeDef esp8266_mqtt_connect(void)
     sprintf(mqttConnCmd, "AT+MQTTCONN=0,\"%s\",%d,%d",
          mqttConnCfg.host, mqttConnCfg.port, mqttConnCfg.reconnect);
 
-    esp8266_at_query(mqttConnCmd);
+    esp8266_init_atCmd(mqttConnCmd);
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         OLED_ShowString(2, 0, "MQTT CON Failed");
@@ -203,7 +202,15 @@ HAL_StatusTypeDef esp8266_disconnect(void)
     return HAL_OK;
 }
 
-HAL_StatusTypeDef esp8266_at_query(char *data)
+/**
+ * @brief 发送AT命令并获取响应
+ * 
+ * @param data 
+ * @return HAL_StatusTypeDef 
+ * @author xu
+ * @date 2025-08-08
+ */
+HAL_StatusTypeDef esp8266_init_atCmd(char *data)
 {
     memset(esp8266_receive_data, 0, ESP8266_BUFFER_SIZE);
     printf("%s\r\n", data);
@@ -211,10 +218,6 @@ HAL_StatusTypeDef esp8266_at_query(char *data)
     return HAL_OK;
 }
 
-char *esp8266_get_data()
-{
-    return esp8266_receive_data;
-}
 
 /**
  * @brief 订阅MQTT主题
@@ -230,7 +233,7 @@ HAL_StatusTypeDef esp8266_sub_topic(char *topic, int qos)
     char mqttSubTopic[200];
     sprintf(mqttSubTopic, "AT+MQTTSUB=0,\"%s\",%d",topic,qos);
 
-    esp8266_at_query(mqttSubTopic);
+    esp8266_init_atCmd(mqttSubTopic);
     if (strstr(esp8266_receive_data, "OK") == NULL)
     {
         OLED_ShowString(2, 0, "Sub Topic Failed");
@@ -251,3 +254,20 @@ void esp8266_init_subTopic(void)
     esp8266_sub_topic("smartHome/cmd", 0);
 }
 
+/**
+ * @brief 数据发布
+ * 
+ * @author xu
+ * @date 2025-08-08
+ */
+HAL_StatusTypeDef esp8266_public_data(char *topic, char *data, int qos, int retain)
+{
+    char mqttPubData[254];
+    // 构建完整的 AT 命令
+    snprintf(mqttPubData, sizeof(mqttPubData),"AT+MQTTPUB=0,\"%s\",\"%s\",%d,%d",topic,data,qos, retain);
+    // 发送 AT 命令
+    memset(esp8266_receive_data, 0, ESP8266_BUFFER_SIZE);
+    printf("%s\r\n", mqttPubData);
+
+    return HAL_OK;
+}

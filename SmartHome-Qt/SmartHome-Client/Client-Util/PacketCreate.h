@@ -10,6 +10,14 @@ struct ParsedPacket {
 	QByteArray data;
 };
 
+struct MqttJsonConfig
+{
+	QString product;
+	QString device;
+	QString property;
+	QString value;
+};
+
 class PacketCreate
 {
 public:
@@ -19,6 +27,7 @@ public:
 	static QByteArray lenthOfbinaryPacket(qint32 packetSize);
 	static void addPacket(QByteArray& targetData, const QByteArray& packet);
 	static QByteArray allBinaryPacket(const QByteArray& packet);
+	static QJsonObject mqttJsonConfig(const MqttJsonConfig&mqttJsonConfig);
 	//解析
 	static QList<ParsedPacket> parseDataPackets(const QByteArray& allData);
 };

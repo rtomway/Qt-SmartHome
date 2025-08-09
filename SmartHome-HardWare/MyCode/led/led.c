@@ -1,5 +1,10 @@
 #include "led.h"
 #include <string.h>
+#include <stdlib.h>
+
+#include "util/mqttPacket.h"
+#include "esp8266/esp8266.h"
+#include "oled/oled.h"
 
 
 /**
@@ -49,11 +54,28 @@ void update_led_state(const char *device, const char *property, const char *valu
     //单一灯光控制
     for(int i = 0; i < sizeof(led_configs) / sizeof(LED_Config); i++)
     {
-        if (strcmp(device, led_configs[i].led_name) == 0)
+        if (strcmp(device, led_configs[i].LED_NAME) == 0)
         {
+           
             led_control(led_configs[i], led_state);
             break;
         }
     }
-
+  
 }
+
+/**
+ * @brief 获取灯光状态
+ * 
+ * @param device 
+ * @param property 
+ * @param value 
+ * @return MqttJsonConfig 
+ * @author xu
+ * @date 2025-08-08
+ */
+/* MqttJsonConfig get_led_state(const char *device, const char *property, const char *value)
+{
+   
+    return mqttJsonCfg;
+} */

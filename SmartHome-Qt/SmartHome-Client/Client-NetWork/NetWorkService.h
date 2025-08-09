@@ -24,7 +24,7 @@ public:
 	void connectToMqttBroker();
 	void disConnectWithMqttBroker();
 
-	void publishCmd(const QString& topic, const QByteArray& message, quint8 qos = 1, bool retain = false);
+	void publishCmd(const QString& topic, const QJsonObject& obj, quint8 qos = 1, bool retain = false);
 private:
 	HttpClientPort* m_httpClientPort;
 	HttpClientPort* m_externalHttpClientPort;

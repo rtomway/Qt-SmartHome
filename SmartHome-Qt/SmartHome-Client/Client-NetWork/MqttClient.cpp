@@ -127,6 +127,7 @@ void MqttClient::publishCmd(const QString& topic, const QByteArray& message, qui
 	if (m_mqttClient->state() == QMqttClient::Connected)
 	{
 		qint32 id = m_mqttClient->publish(topic, message, qos, retain);
+		qDebug() << "public:" << topic << message;
 		if (id < 0)
 		{
 			qWarning() << "Failed to publish message to topic:" << topic;
@@ -159,15 +160,6 @@ void MqttClient::onMessageReceived(const QByteArray& message, const QMqttTopicNa
 		qWarning() << "JSON error:" << err.errorString();
 		return;
 	}
+	qDebug() << "接收到数据:" << doc;
 
-	QJsonObject obj = doc.object();
-	qDebug() << "接收数据:" << obj;
-
-	// 处理模块数据上报
-	QString module = obj["module"].toString();
-	QJsonObject data = obj["data"].toObject();
-	if (!module.isEmpty())
-	{
-		emit moduleDataReceived(module, data);
-	}
 }

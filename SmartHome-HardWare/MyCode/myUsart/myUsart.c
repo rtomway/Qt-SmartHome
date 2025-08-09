@@ -1,12 +1,13 @@
 #include "myUsart.h"
 #include "usart.h"
 #include "oled/oled.h"
-
 #include "led/led.h"
+#include "util/mqttPacket.h"
+#include "esp8266/esp8266.h"
+
 #define RECEIVE_BUFFER_SIZE 256
 #define UART_HANDLE &huart1
 
-char receive_data[RECEIVE_BUFFER_SIZE] = {0};
 CommandMap *cmdMap = NULL; // 全局哈希表
 
 /**
@@ -19,9 +20,10 @@ void ReceiveData_idle_init()
 {
     __HAL_UART_CLEAR_IDLEFLAG(UART_HANDLE);
     __HAL_UART_ENABLE_IT(UART_HANDLE, UART_IT_IDLE);
-    HAL_UARTEx_ReceiveToIdle_IT(UART_HANDLE, (uint8_t *)receive_data, RECEIVE_BUFFER_SIZE);
+    memset(esp8266_receive_data, 0, RECEIVE_BUFFER_SIZE);
+    HAL_UARTEx_ReceiveToIdle_IT(UART_HANDLE, (uint8_t *)esp8266_receive_data, RECEIVE_BUFFER_SIZE);
 
-    initCmdHash(); // 初始化命令哈希表
+    initCmdHash(); 
 }
 
 /**
@@ -30,49 +32,11 @@ void ReceiveData_idle_init()
  * @author xu
  * @date 2025-08-06
  */
-void ReceiveData_idle_handler()
+void ReceiveData_idle_handler(uint16_t Size)
 {
     // 处理接收到的数据
-    if (strstr(receive_data, "on") != NULL)
-    {
-        // 执行对应的命令
-        if (strstr(receive_data, "All_light") != NULL)
-            execute_command("light", "All_light", "state", "on");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "hall_light") != NULL)
-            execute_command("light", "hall_light", "state", "on");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "bedroom_light") != NULL)
-            execute_command("light", "bedroom_light", "state", "on");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "bathroom_light") != NULL)
-            execute_command("light", "bathroom_light", "state", "on");
-    }
-    if (strstr(receive_data, "off") != NULL)
-    {
-        // 执行对应的命令
-        if (strstr(receive_data, "All_light") != NULL)
-            execute_command("light", "All_light", "state", "off");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "hall_light") != NULL)
-            execute_command("light", "hall_light", "state", "off");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "bedroom_light") != NULL)
-            execute_command("light", "bedroom_light", "state", "off");
-
-        // 执行对应的命令
-        if (strstr(receive_data, "bathroom_light") != NULL)
-            execute_command("light", "bathroom_light", "state", "off");
-    }
-
-    // 清除缓冲区等待下次接收
-    memset(receive_data, 0, RECEIVE_BUFFER_SIZE);
-    HAL_UARTEx_ReceiveToIdle_IT(UART_HANDLE, (uint8_t *)receive_data, RECEIVE_BUFFER_SIZE);
+    MqttJsonConfig mqttJsonConfig = parseMqttJson(esp8266_receive_data, Size);
+    execute_command(mqttJsonConfig.product, mqttJsonConfig.device, mqttJsonConfig.property, mqttJsonConfig.value);
 }
 
 /**
@@ -87,11 +51,38 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if (huart->Instance == USART1)
     {
-        ReceiveData_idle_handler(); // 调用处理函数
+        // 未连接
+        if (strstr((char *)esp8266_receive_data, "MQTTDISCONNECTED") != NULL)
+        {
+            esp8266_mqtt_connect();
+        }
+        //at指令回复
+        if (strstr((char *)esp8266_receive_data, "OK") != NULL)
+        {
+            OLED_ShowString(1, 0, "public data OK");
+        }
+        if (strstr((char *)esp8266_receive_data, "ERROR") != NULL)
+        {
+            OLED_ShowString(1, 0, "public data ERROR");
+        }
+        //订阅接收qt客户端指令
+        if (strstr((char *)esp8266_receive_data, "MQTTSUBRECV") != NULL)
+        {
+            ReceiveData_idle_handler(Size); // 调用处理函数
+        }
     }
+
+    // 清除缓冲区等待下次接收
+    memset(esp8266_receive_data, 0, RECEIVE_BUFFER_SIZE);
+    HAL_UARTEx_ReceiveToIdle_IT(UART_HANDLE, (uint8_t *)esp8266_receive_data, RECEIVE_BUFFER_SIZE);
 }
 
-// 初始化指令哈希表
+/**
+ * @brief 初始化命令哈希表
+ *
+ * @author xu
+ * @date 2025-08-07
+ */
 void initCmdHash()
 {
     register_command("light", update_led_state);
@@ -108,12 +99,12 @@ void initCmdHash()
 void register_command(const char *cmd, CommandFunc func)
 {
     CommandMap *item = (CommandMap *)malloc(sizeof(CommandMap));
-    strcpy(item->cmd, cmd); 
+    strcpy(item->cmd, cmd);
     item->func = func;
     item->hh.next = NULL;
     if (cmdMap == NULL)
     {
-        cmdMap = item; 
+        cmdMap = item;
     }
     else
     {
@@ -148,7 +139,7 @@ void execute_command(const char *cmd, const char *device, const char *property, 
     }
     if (item && item->func)
     {
-        item->func(device, property, value); 
+        item->func(device, property, value);
     }
     else
     {

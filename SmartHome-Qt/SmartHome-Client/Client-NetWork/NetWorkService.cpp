@@ -1,4 +1,5 @@
 ﻿#include "NetWorkService.h"
+#include <QJsonDocument>
 
 
 NetWorkService::NetWorkService(MqttClient* mqttClient, HttpClientPort* httpClientPort, HttpClientPort* externalHttpClientPort, QObject* parent)
@@ -57,7 +58,9 @@ void NetWorkService::disConnectWithMqttBroker()
 }
 
 //发布消息
-void NetWorkService::publishCmd(const QString& topic, const QByteArray& message, quint8 qos, bool retain)
+void NetWorkService::publishCmd(const QString& topic, const QJsonObject& obj, quint8 qos, bool retain)
 {
+	QJsonDocument doc(obj);
+	auto message = doc.toJson(QJsonDocument::Compact);
 	m_mqttClient->publishCmd(topic, message, qos, retain);
 }

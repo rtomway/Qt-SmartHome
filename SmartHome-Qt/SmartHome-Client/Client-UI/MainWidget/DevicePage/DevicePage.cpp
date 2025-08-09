@@ -6,6 +6,9 @@
 
 #include "../Client-ServiceLocator/NetWorkServiceLocator.h"
 #include "EventBus.h"
+#include "PacketCreate.h"
+
+#define	LIGHT_COUNT 3
 
 DevicePage::DevicePage(QWidget* parent)
 	:QWidget(parent)
@@ -64,8 +67,7 @@ void DevicePage::onBathRoomLightChange(bool state)
 //和总灯光控制同步
 void DevicePage::onAllLightStateChanged(bool state)
 {
-	m_lightCount = state ? 3 : 0;
-	qDebug() << "m_lightCount:" << m_lightCount;
+	m_lightCount = state ? LIGHT_COUNT : 0;
 	m_hallLight->setSwitchState(state);
 	m_bathroomLight->setSwitchState(state);
 	m_bedroomLight->setSwitchState(state);
@@ -75,22 +77,23 @@ void DevicePage::onAllLightStateChanged(bool state)
 void DevicePage::sendLightCmd(const QString& device, bool state)
 {
 	auto topic = "smartHome/cmd";
-	QJsonObject lightObj;
-	lightObj[device] = state ? "on" : "off";
-	qDebug() << state << lightObj;
-	QJsonDocument lightDoc(lightObj);
-	auto message = lightDoc.toJson(QJsonDocument::Compact);
 
+	MqttJsonConfig lightConfig;
+	lightConfig.product = "light";
+	lightConfig.device = device;
+	lightConfig.property = "state";
+	lightConfig.value = state ? "on" : "off";
+	auto lightObj = PacketCreate::mqttJsonConfig(lightConfig);
+
+	NetWorkServiceLocator::instance()->publishCmd(topic, lightObj);
+
+	//同步ui
 	if (state)
-	{
 		m_lightCount++;
-	}
 	else
-	{
 		m_lightCount--;
-	}
-	qDebug() << "m_lightCount:" << m_lightCount;
-	if (m_lightCount == 3)
+
+	if (m_lightCount == LIGHT_COUNT)
 	{
 		emit EventBus::instance()->allLightControl(true);
 	}
@@ -99,5 +102,4 @@ void DevicePage::sendLightCmd(const QString& device, bool state)
 		emit EventBus::instance()->allLightControl(false);
 	}
 
-	NetWorkServiceLocator::instance()->publishCmd(topic, message);
 }

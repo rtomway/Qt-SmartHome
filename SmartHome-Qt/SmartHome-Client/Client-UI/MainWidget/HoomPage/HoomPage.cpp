@@ -7,6 +7,7 @@
 
 #include "../Client-ServiceLocator/NetWorkServiceLocator.h"
 #include "EventBus.h"
+#include "PacketCreate.h"
 
 
 
@@ -83,15 +84,16 @@ void HoomPage::onUpdateCurrentTime()
 void HoomPage::onLightStateChanged(bool state)
 {
 	auto topic = "smartHome/cmd";
-	QJsonObject lightObj;
-	lightObj["All_light"] = state ? "on" : "off";
-	qDebug() << state << lightObj;
-	QJsonDocument lightDoc(lightObj);
-	auto message = lightDoc.toJson(QJsonDocument::Compact);
+	MqttJsonConfig allLightCfg;
+	allLightCfg.product = "light";
+	allLightCfg.device = "All_light";
+	allLightCfg.property = "state";
+	allLightCfg.value = state ? "on" : "off";
+	QJsonObject lightObj = PacketCreate::mqttJsonConfig(allLightCfg);
+
+	NetWorkServiceLocator::instance()->publishCmd(topic, lightObj);
 
 	emit EventBus::instance()->allLightControl(state);
-
-	NetWorkServiceLocator::instance()->publishCmd(topic, message);
 }
 
 //通各个开关总体状态同步

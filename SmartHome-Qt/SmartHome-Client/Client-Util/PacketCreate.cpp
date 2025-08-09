@@ -91,6 +91,17 @@ QByteArray PacketCreate::allBinaryPacket(const QByteArray& packet)
 	return allData;
 }
 
+//打包mqttjson数据
+QJsonObject PacketCreate::mqttJsonConfig(const MqttJsonConfig& mqttJsonConfig)
+{
+	QJsonObject mqttObj;
+	mqttObj["product"] = mqttJsonConfig.product;
+	mqttObj["device"] = mqttJsonConfig.device;
+	mqttObj["property"] = mqttJsonConfig.property;
+	mqttObj["value"] = mqttJsonConfig.value;
+	return mqttObj;
+}
+
 //解析多个数据包
 QList<ParsedPacket> PacketCreate::parseDataPackets(const QByteArray& allData)
 {
