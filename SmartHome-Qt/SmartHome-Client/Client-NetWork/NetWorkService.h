@@ -5,6 +5,7 @@
 
 #include "HttpClientPort.h"
 #include "MqttClient.h"
+#include "MessageHandle.h"
 
 class NetWorkService :public QObject
 {
@@ -26,9 +27,13 @@ public:
 
 	void publishCmd(const QString& topic, const QJsonObject& obj, quint8 qos = 1, bool retain = false);
 private:
+	void init();
+private:
 	HttpClientPort* m_httpClientPort;
 	HttpClientPort* m_externalHttpClientPort;
 	MqttClient* m_mqttClient;
+	MessageHandle* m_messageHandle;
+
 };
 
 

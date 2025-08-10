@@ -20,6 +20,8 @@
         <file>Resource/Picture/bedLighton.png</file>
         <file>Resource/Picture/hallLightoff.png</file>
         <file>Resource/Picture/hallLighton.png</file>
+        <file>Resource/Picture/indoorHumidity.png</file>
+        <file>Resource/Picture/indoorTemperature.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>

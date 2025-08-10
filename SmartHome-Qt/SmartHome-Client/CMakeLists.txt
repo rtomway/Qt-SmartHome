@@ -26,6 +26,7 @@ add_subdirectory(Client-UI)
 add_subdirectory(Client-NetWork)
 add_subdirectory(Client-Util)
 add_subdirectory(Client-DataCenter)
+add_subdirectory(Client-Core)
 
 
 #运行程序
@@ -46,7 +47,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 #链接库（）
 target_link_libraries(${PROJECT_NAME} PRIVATE  
 	Client-NetWork  Client-DataCenter
-	Client-UI Client-Util 
+	Client-UI Client-Util Client-Core
 	Qt6::Core Qt6::Widgets Qt6::Network			
 	fmt::fmt  Qt6::Mqtt
 )

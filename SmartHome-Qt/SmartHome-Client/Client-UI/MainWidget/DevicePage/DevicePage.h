@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "CustomCard/deviceControlCard/deviceContralCard.h"
+#include "CustomCard/sersorDisplayCard/sersorDisplayCard.h"
 
 namespace Ui { class DevicePage; }
 
@@ -24,6 +25,8 @@ private:
 	DeviceContralCard* m_hallLight;
 	DeviceContralCard* m_bedroomLight;
 	DeviceContralCard* m_bathroomLight;
+	SersorDisplayCard* m_indoorTempDispaly;
+	SersorDisplayCard* m_humidityDispaly;
 	int m_lightCount = 0;
 };
 

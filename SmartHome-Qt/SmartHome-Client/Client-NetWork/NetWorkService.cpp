@@ -7,13 +7,19 @@ NetWorkService::NetWorkService(MqttClient* mqttClient, HttpClientPort* httpClien
 	, m_mqttClient(mqttClient)
 	, m_httpClientPort(httpClientPort)
 	, m_externalHttpClientPort(externalHttpClientPort)
+	, m_messageHandle(new MessageHandle(this))
 {
-
+	init();
 }
 
 NetWorkService::~NetWorkService()
 {
 
+}
+
+void NetWorkService::init()
+{
+	connect(m_mqttClient, &MqttClient::MqttMessageReceived, m_messageHandle, &MessageHandle::handle_textMessage);
 }
 
 //http内部请求
@@ -54,7 +60,7 @@ void NetWorkService::connectToMqttBroker()
 //mqtt断开onenet的连接
 void NetWorkService::disConnectWithMqttBroker()
 {
-	m_mqttClient->disconnected();
+	m_mqttClient->disconnect();
 }
 
 //发布消息

@@ -9,9 +9,7 @@ MqttClient::MqttClient(QObject* parent)
 	: QObject(parent)
 	, m_mqttClient(new QMqttClient(this))
 {
-	// 连接信号槽
-	connect(m_mqttClient, &QMqttClient::stateChanged, this, &MqttClient::onStateChanged);
-	connect(m_mqttClient, &QMqttClient::messageReceived, this, &MqttClient::onMessageReceived);
+
 }
 
 MqttClient::~MqttClient()
@@ -27,11 +25,14 @@ void MqttClient::init()
 	connect(m_mqttClient, &QMqttClient::connected, this, [=]
 		{
 			initSubscribe();
+			// 连接信号槽
+			connect(m_mqttClient, &QMqttClient::stateChanged, this, &MqttClient::onStateChanged);
+			connect(m_mqttClient, &QMqttClient::messageReceived, this, &MqttClient::onMessageReceived);
 		});
 
 }
 
-//连接onenet
+//连接Broker
 void MqttClient::connectToBroker(const QString& clientId, const QString& userName, const QString& password)
 {
 
@@ -45,7 +46,7 @@ void MqttClient::connectToBroker(const QString& clientId, const QString& userNam
 	m_mqttClient->setProtocolVersion(QMqttClient::MQTT_5_0);
 
 	m_mqttClient->setKeepAlive(60);
-	m_mqttClient->setCleanSession(true);                   // 设置会话标志位true
+	m_mqttClient->setCleanSession(true);
 
 	// 配置 SSL
 	QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
@@ -56,11 +57,20 @@ void MqttClient::connectToBroker(const QString& clientId, const QString& userNam
 	m_mqttClient->connectToHostEncrypted(sslConfig);
 }
 
+//Broker断开连接
 void MqttClient::disconnectFromBroker()
 {
 	if (m_mqttClient->state() != QMqttClient::Disconnected)
 	{
 		m_mqttClient->disconnectFromHost();
+	}
+}
+//断开和Broker的连接
+void MqttClient::disconnect()
+{
+	if (m_mqttClient->state() != QMqttClient::Disconnected)
+	{
+		m_mqttClient->disconnect();
 	}
 }
 
@@ -79,10 +89,10 @@ void MqttClient::onStateChanged(QMqttClient::ClientState state)
 	switch (state)
 	{
 	case QMqttClient::Connected:
-		emit connected();
+
 		break;
 	case QMqttClient::Disconnected:
-		emit disconnected();
+
 		break;
 	default:
 		break;
@@ -92,7 +102,7 @@ void MqttClient::onStateChanged(QMqttClient::ClientState state)
 //订阅初始化
 void MqttClient::initSubscribe()
 {
-	this->subscribe("smartHome/data",0);
+	this->subscribe("smartHome/data", 0);
 }
 
 //主题订阅
@@ -134,20 +144,13 @@ void MqttClient::publishCmd(const QString& topic, const QByteArray& message, qui
 		}
 		else
 		{
-			emit messagePublished(id);
+
 		}
 	}
-	else 
+	else
 	{
 		qWarning() << "Cannot publish - client not connected";
 	}
-}
-
-
-//模块数据接收
-void MqttClient::moduleDataReceived(const QString& module, const QJsonObject& data)
-{
-
 }
 
 //信息接收
@@ -160,6 +163,12 @@ void MqttClient::onMessageReceived(const QByteArray& message, const QMqttTopicNa
 		qWarning() << "JSON error:" << err.errorString();
 		return;
 	}
-	qDebug() << "接收到数据:" << doc;
+	QString messageText = QString::fromUtf8(message);
+	if (topic.name() == "smartHome/data")
+	{
+		qDebug() << "接收到数据:" << doc;
+		emit MqttMessageReceived(messageText);
+	}
+
 
 }

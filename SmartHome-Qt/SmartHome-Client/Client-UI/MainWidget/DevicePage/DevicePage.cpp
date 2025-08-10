@@ -1,6 +1,5 @@
 ﻿#include "DevicePage.h"
 #include "ui_DevicePage.h"
-
 #include <QJsonObject>
 #include <QJsonDocument>
 
@@ -25,6 +24,7 @@ DevicePage::~DevicePage()
 
 void DevicePage::init()
 {
+	//灯光
 	QPixmap hallOnPixmap(":/picture/Resource/Picture/hallLighton.png");
 	QPixmap hallOffPixmap(":/picture/Resource/Picture/hallLightoff.png");
 	m_hallLight = new DeviceContralCard("大厅主灯", hallOnPixmap, hallOffPixmap, this);
@@ -41,12 +41,21 @@ void DevicePage::init()
 	ui->bedroomLightControl->layout()->addWidget(m_bedroomLight);
 	ui->bathroomLightControl->layout()->addWidget(m_bathroomLight);
 
+	//温湿度
+	m_indoorTempDispaly = new SersorDisplayCard("温度", QPixmap(":/picture/Resource/Picture/indoorTemperature.png"), this);
+	ui->indoorTemperatureWidget->layout()->addWidget(m_indoorTempDispaly);
+	m_humidityDispaly = new SersorDisplayCard("湿度", QPixmap(":/picture/Resource/Picture/indoorHumidity.png"), this);
+	ui->humidityWidget->layout()->addWidget(m_humidityDispaly);
+
 	//灯光控制
 	connect(m_hallLight, &DeviceContralCard::SwitchState, this, &DevicePage::onHallLightChange);
 	connect(m_bedroomLight, &DeviceContralCard::SwitchState, this, &DevicePage::onBedRoomLightChange);
 	connect(m_bathroomLight, &DeviceContralCard::SwitchState, this, &DevicePage::onBathRoomLightChange);
-
 	connect(EventBus::instance(), &EventBus::allLightControl, this, &DevicePage::onAllLightStateChanged);
+
+	//温湿度显示
+	connect(EventBus::instance(), &EventBus::updateIndoorTemperature, m_indoorTempDispaly, &SersorDisplayCard::setSersorValue);
+	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_humidityDispaly, &SersorDisplayCard::setSersorValue);
 }
 
 void DevicePage::onHallLightChange(bool state)
@@ -103,3 +112,4 @@ void DevicePage::sendLightCmd(const QString& device, bool state)
 	}
 
 }
+

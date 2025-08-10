@@ -33,6 +33,7 @@
 #include "myUsart/myUsart.h"
 #include "led/led.h"
 #include "myTimer/myTimer.h"
+#include "myAdc/myAdc.h"
 
 /* USER CODE END Includes */
 
@@ -112,15 +113,18 @@ int main(void)
   ReceiveData_idle_init();
   timer_start();
 
-  /* User code */
- 
-  /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
+      /* User code */
+
+      /* USER CODE END 2 */
+
+      /* Infinite loop */
+      /* USER CODE BEGIN WHILE */
+      while (1)
   {
     /* USER CODE END WHILE */
+   // OLED_ShowNum(2, 0, myAdc_GetValue(),4);
+    //HAL_Delay(1000);
 
     /* USER CODE BEGIN 3 */
   }
