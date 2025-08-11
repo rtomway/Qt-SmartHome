@@ -16,27 +16,39 @@ MessageHandle::MessageHandle(QObject* parent)
 //注册表
 void MessageHandle::initRequestHash()
 {
-	m_requestHash["temperatureSersor"] = SersorDataHandle::updateIndoorTemperature;
-	m_requestHash["humiditySersor"] = SersorDataHandle::updateIndoorHumidity;
+	m_requestHash["temperatureSensor"] = SersorDataHandle::updateIndoorTemperature;
+	m_requestHash["lightSensor"] = SersorDataHandle::updateIndoorHumidity;
 }
 
 //文本消息处理
 void MessageHandle::handle_textMessage(const QString& message)
 {
-	qDebug() << "ddddddd:" << message;
-	auto messageDoc = QJsonDocument::fromJson(message.toUtf8());
-	if (messageDoc.isObject())
-	{
-		auto sersorObj = messageDoc.object();
-		auto product = sersorObj["product"].toString();
-		qDebug() << "接收传感器数据:" << product;
-		QByteArray data;
-		if (m_requestHash.contains(product))
-		{
-			auto& handle = m_requestHash[product];
-			handle(sersorObj, data);
-		}
-	}
+    qDebug() << "接收到原始消息:" << message;
+    auto messageDoc = QJsonDocument::fromJson(message.toUtf8());
+    if (!messageDoc.isObject()) 
+    {
+        qDebug() << "消息不是JSON对象";
+        return;
+    }
+
+    QJsonObject rootObj = messageDoc.object();
+    for (auto it = rootObj.begin(); it != rootObj.end(); ++it) 
+    {
+        QString sensorType = it.key(); 
+        QJsonObject sensorData = it.value().toObject(); 
+
+        qDebug() << "解析传感器类型:" << sensorType;
+        if (m_requestHash.contains(sensorType)) 
+        {
+         
+            auto& handleFunc = m_requestHash[sensorType];
+            handleFunc(sensorData,QByteArray()); 
+        }
+        else 
+        {
+            qDebug() << "未注册的传感器类型:" << sensorType;
+        }
+    }
 }
 
 //二进制数据处理

@@ -16,6 +16,6 @@ typedef struct MqttJsonConfig
 MqttJsonConfig parseMqttJson(char*receive_data,uint16_t Size);
 
 //打包json数据
-void packetMqttJson(MqttJsonConfig mqttJsonConfig,char *json_str);
+void packetMqttJsonArray(MqttJsonConfig *config_array, uint8_t count, char *json_str, uint16_t buf_size);
 
 #endif // myUsart.h

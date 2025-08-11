@@ -42,10 +42,10 @@ void DevicePage::init()
 	ui->bathroomLightControl->layout()->addWidget(m_bathroomLight);
 
 	//温湿度
-	m_indoorTempDispaly = new SersorDisplayCard("温度", QPixmap(":/picture/Resource/Picture/indoorTemperature.png"), this);
+	m_indoorTempDispaly = new SersorDisplayCard("室内温度", QPixmap(":/picture/Resource/Picture/indoorTemperature.png"), this);
 	ui->indoorTemperatureWidget->layout()->addWidget(m_indoorTempDispaly);
-	m_humidityDispaly = new SersorDisplayCard("湿度", QPixmap(":/picture/Resource/Picture/indoorHumidity.png"), this);
-	ui->humidityWidget->layout()->addWidget(m_humidityDispaly);
+	m_indoorLightDispaly = new SersorDisplayCard("室内光照", QPixmap(":/picture/Resource/Picture/indoorLight.png"), this);
+	ui->indoorLightWidget->layout()->addWidget(m_indoorLightDispaly);
 
 	//灯光控制
 	connect(m_hallLight, &DeviceContralCard::SwitchState, this, &DevicePage::onHallLightChange);
@@ -55,7 +55,7 @@ void DevicePage::init()
 
 	//温湿度显示
 	connect(EventBus::instance(), &EventBus::updateIndoorTemperature, m_indoorTempDispaly, &SersorDisplayCard::setSersorValue);
-	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_humidityDispaly, &SersorDisplayCard::setSersorValue);
+	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_indoorLightDispaly, &SersorDisplayCard::setSersorValue);
 }
 
 void DevicePage::onHallLightChange(bool state)

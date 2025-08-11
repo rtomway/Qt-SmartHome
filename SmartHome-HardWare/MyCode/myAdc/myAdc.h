@@ -3,13 +3,13 @@
 
 #include "adc.h"
 
-void myAdc_Start(void);
-void myAdc_Stop(void);
-float myAdc_GetValue(void);
+#define ADC_CHANNEL_COUNT 2
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc);
 
-extern float adc_value;
-extern uint32_t adc_buf[1];
+void myAdc_data_public();
+
+extern uint16_t adc_buf[ADC_CHANNEL_COUNT];
+extern uint8_t adc_conv_complete_flag;
 
 #endif /* MYADC_H_ */

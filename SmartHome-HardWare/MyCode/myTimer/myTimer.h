@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "main.h"
 
-void timer_start();
-void timer_stop();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+
+extern uint8_t timing_flag;
 
 #endif /* __MYTIMER_H__ */

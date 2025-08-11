@@ -26,7 +26,7 @@ private:
 	DeviceContralCard* m_bedroomLight;
 	DeviceContralCard* m_bathroomLight;
 	SersorDisplayCard* m_indoorTempDispaly;
-	SersorDisplayCard* m_humidityDispaly;
+	SersorDisplayCard* m_indoorLightDispaly;
 	int m_lightCount = 0;
 };
 

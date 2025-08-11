@@ -27,8 +27,7 @@ static LED_Config led_configs[] =
 void led_control(LED_Config led, GPIO_PinState state);
 //灯光状态更新
 void update_led_state(const char *device, const char *property, const char *value);
-//获取灯光状态
-//MqttJsonConfig get_led_state(const char *device, const char *property, const char *value);
+
 
 
 #endif // __LED_H

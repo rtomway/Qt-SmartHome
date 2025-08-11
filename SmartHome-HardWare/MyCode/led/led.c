@@ -64,18 +64,3 @@ void update_led_state(const char *device, const char *property, const char *valu
   
 }
 
-/**
- * @brief 获取灯光状态
- * 
- * @param device 
- * @param property 
- * @param value 
- * @return MqttJsonConfig 
- * @author xu
- * @date 2025-08-08
- */
-/* MqttJsonConfig get_led_state(const char *device, const char *property, const char *value)
-{
-   
-    return mqttJsonCfg;
-} */

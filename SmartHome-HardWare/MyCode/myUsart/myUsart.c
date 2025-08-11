@@ -2,13 +2,14 @@
 #include "usart.h"
 #include "oled/oled.h"
 #include "led/led.h"
-#include "util/mqttPacket.h"
 #include "esp8266/esp8266.h"
 
 #define RECEIVE_BUFFER_SIZE 256
 #define UART_HANDLE &huart1
 
 CommandMap *cmdMap = NULL; // 全局哈希表
+uint8_t cmd_flag = 0;
+MqttJsonConfig cmd_mqtt_config={0};
 
 /**
  * @brief 开启串口空闲中断
@@ -34,9 +35,13 @@ void ReceiveData_idle_init()
  */
 void ReceiveData_idle_handler(uint16_t Size)
 {
-    // 处理接收到的数据
-    MqttJsonConfig mqttJsonConfig = parseMqttJson(esp8266_receive_data, Size);
-    execute_command(mqttJsonConfig.product, mqttJsonConfig.device, mqttJsonConfig.property, mqttJsonConfig.value);
+    if(cmd_flag==0)
+    {
+        // 处理接收到的数据
+        cmd_mqtt_config = parseMqttJson(esp8266_receive_data, Size);
+        cmd_flag = 1;
+    }
+
 }
 
 /**

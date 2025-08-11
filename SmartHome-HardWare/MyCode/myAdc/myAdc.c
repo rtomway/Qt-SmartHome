@@ -3,76 +3,72 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "oled/oled.h"
+#include <math.h>
+#include "util/mqttPacket.h"
+#include "esp8266/esp8266.h"
 
-/**
- * @brief 开启adc转换
- * 
- * @author xu
- * @date 2025-07-21
- */
-void myAdc_Start(void)
-{
-    HAL_ADC_Start(&hadc1);
-}
 
-/**
- * @brief 关闭adc转换
- * 
- * @author xu
- * @date 2025-07-21
- */
-void myAdc_Stop(void)
-{
-    HAL_ADC_Stop(&hadc1);
-}
 
-/**
- * @brief 获取adc转换结果
- * 
- * @return uint16_t 
- * @author xu
- * @date 2025-07-21
- */
-static float adc_value = 0;
-float myAdc_GetValue()
-{
-    HAL_ADCEx_Calibration_Start(&hadc1);
-    myAdc_Start();
-
-    float temperature;
-    if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
-    {
-        adc_value = HAL_ADC_GetValue(&hadc1);
-        temperature = adc_value * 3.3 / 4095 - 3;
-    }
-    myAdc_Stop();
-    //sprintf(str, "%.3f", adc_value);
-
-    return adc_value;
-}
-
+float adc_value;
+uint16_t adc_buf[ADC_CHANNEL_COUNT] = {0};
+float temp_value=0;
+float light_value=0;
+uint8_t adc_conv_complete_flag = 0;
 
 
 /**
- * @brief 重写adc转换完成回调函数
- *      (外部触发定时器比较输出触发channel模式要设置成toggle模式)
+ * @brief 重写adc转换完成回调函数(定时器软件触发)
+ *    
  * @param hadc 
  * @author xu
  * @date 2025-07-21
  */
-//uint32_t adc_buf[1] = {0};
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    adc_value = HAL_ADC_GetValue(&hadc1);
-    OLED_ShowNum(1, 0, adc_value, 5);
-    uint32_t adc_val = adc_buf[0];
-    OLED_ShowNum(2, 0, adc_val, 5);
+    if (hadc->Instance == ADC1)
+    {
+        // 温度转换
+        float Rntc = 10000.0f * adc_buf[0] / (4096.0f - adc_buf[0]);
+        // 公式：T(℃) = 1/(1/298.15 + (1/3936)*ln(Rntc/10000)) - 273.15
+        temp_value = 1.0f / ((1.0f / 298.15f) + (1.0f / 3936.0f) * log(Rntc / 10000.0f)) - 273.15f;
+
+        //光照强度转换
+        light_value = (4095.0f - adc_buf[1]) * 100.0f / 4095.0f;
+
+        // 转换完成
+        adc_conv_complete_flag = 1;
+    }
+  
 }
 
-void HAL_DMA_XferCpltCallback(DMA_HandleTypeDef *hdma)
+
+/**
+ * @brief 定时上传传感器数据
+ * 
+ * @author xu
+ * @date 2025-08-11
+ */
+
+void myAdc_data_public()
 {
-    uint32_t adc_val = adc_buf[0];
-    OLED_ShowNum(2, 8, 1, 2);
-   HAL_ADC_Start_DMA(&hadc1, adc_buf, 1);
-}
+    if(adc_conv_complete_flag==0)
+        return;
 
+    MqttJsonConfig sensors[2];
+
+    // 温度
+    strcpy(sensors[0].product, "temperatureSensor"); 
+    strcpy(sensors[0].device, "esp8266");
+    strcpy(sensors[0].property, "temperature");
+    snprintf(sensors[0].value, sizeof(sensors[0].value), "%.1f", temp_value);
+
+    //光照
+    strcpy(sensors[1].product, "lightSensor");
+    strcpy(sensors[1].device, "esp8266");
+    strcpy(sensors[1].property, "light");
+    snprintf(sensors[1].value, sizeof(sensors[1].value), "%.1f", light_value);
+
+    char json_str[512];
+    packetMqttJsonArray(sensors, 2, json_str, sizeof(json_str));
+    esp8266_public_data("smartHome/data", json_str, 0, 0);
+}

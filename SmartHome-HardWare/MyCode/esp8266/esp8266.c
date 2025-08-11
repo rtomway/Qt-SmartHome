@@ -138,12 +138,16 @@ HAL_StatusTypeDef esp8266_mqtt_checkandReCon(void)
         return HAL_OK;
     }
     //如果mqtt没有连接，尝试重新连接
-   if(esp8266_mqtt_connect() == HAL_OK)
+    for(int i=0;i<5;i++)
     {
-        OLED_ShowString(2, 0, "MQTT reConnected");
-        esp8266_mqtt_checkandReCon();
-        return HAL_OK;
+        if (esp8266_mqtt_connect() == HAL_OK)
+        {
+            OLED_ShowString(2, 0, "MQTT reConnected");
+           // esp8266_mqtt_checkandReCon();
+            return HAL_OK;
+        }
     }
+   
     //如果mqtt连接失败
     OLED_ShowString(3, 0, "MQTT Failed");
     esp8266_mqttState = 0;
@@ -266,7 +270,6 @@ HAL_StatusTypeDef esp8266_public_data(char *topic, char *data, int qos, int reta
     // 构建完整的 AT 命令
     snprintf(mqttPubData, sizeof(mqttPubData),"AT+MQTTPUB=0,\"%s\",\"%s\",%d,%d",topic,data,qos, retain);
     // 发送 AT 命令
-    memset(esp8266_receive_data, 0, ESP8266_BUFFER_SIZE);
     printf("%s\r\n", mqttPubData);
 
     return HAL_OK;

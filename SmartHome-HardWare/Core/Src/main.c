@@ -34,6 +34,9 @@
 #include "led/led.h"
 #include "myTimer/myTimer.h"
 #include "myAdc/myAdc.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -66,6 +69,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void EventHandle();
 
 /* USER CODE END 0 */
 
@@ -102,7 +107,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   MX_ADC1_Init();
-  MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
   OLED_Init();
@@ -111,23 +116,29 @@ int main(void)
 
   esp8266_init();
   ReceiveData_idle_init();
-  timer_start();
+  HAL_ADCEx_Calibration_Start(&hadc1);
+  HAL_TIM_Base_Start_IT(&htim3);
 
+  //myAdc_public_tempValue();
 
-      /* User code */
-
-      /* USER CODE END 2 */
-
-      /* Infinite loop */
-      /* USER CODE BEGIN WHILE */
-      while (1)
+ /*  for (int i = 0;i<3;i++)
   {
-    /* USER CODE END WHILE */
-   // OLED_ShowNum(2, 0, myAdc_GetValue(),4);
-    //HAL_Delay(1000);
+    myAdc_public_tempValue();
+  } */
 
+    /* User code */
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+    /* USER CODE END WHILE */
+    //指令接受和数据上传处理
+     EventHandle();
     /* USER CODE BEGIN 3 */
-  }
+    }
   /* USER CODE END 3 */
 }
 
@@ -178,7 +189,21 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void EventHandle()
+{
+  //定时器数据上报
+  if (timing_flag == 1)
+  {
+    myAdc_data_public();
+    timing_flag = 0;
+  }
+  //指令接收处理
+  if(cmd_flag==1)
+  {
+    execute_command(cmd_mqtt_config.product, cmd_mqtt_config.device, cmd_mqtt_config.property, cmd_mqtt_config.value);
+    cmd_flag=0;
+  }
+}
 /* USER CODE END 4 */
 
 /**

@@ -48,43 +48,51 @@ MqttJsonConfig parseMqttJson(char *receive_data,uint16_t Size)
     return mqttJsonConfig;
 }
 
+
 /**
- * @brief 打包JSON数据
+ * @brief 打包JSON数组数据
  * 
- * @param mqttJsonConfig 
- * @return char* 
+ * @param config_array 
+ * @param count 
+ * @param json_str 
+ * @param buf_size 
  * @author xu
- * @date 2025-08-07
+ * @date 2025-08-11
  */
-void packetMqttJson(MqttJsonConfig mqttJsonConfig, char *json_str)
+void packetMqttJsonArray(MqttJsonConfig *config_array, uint8_t count, char *json_str, uint16_t buf_size)
 {
-    // 创建 cJSON 对象
-   /*  cJSON *root = cJSON_CreateObject();
-    if (root == NULL)
+    memset(json_str, 0, buf_size); 
+    if (count == 0 || config_array == NULL)
     {
-        return ;
+        strcpy(json_str, "{}"); 
+        return;
     }
 
-    cJSON *product = cJSON_CreateString(mqttJsonConfig.product);
-    cJSON_AddItemToObject(root, "product", product);
+    // 拼接JSON起始符
+    uint16_t len = snprintf(json_str, buf_size, "{");
 
+    // 遍历数组，拼接每个传感器的JSON对象
+    for (uint8_t i = 0; i < count; i++)
+    {
+        MqttJsonConfig *config = &config_array[i];
 
-    cJSON *device = cJSON_CreateString(mqttJsonConfig.device);
-    cJSON_AddItemToObject(root, "device", device);
+        // 拼接单个传感器对象（格式与packetMqttJson一致）
+        char temp[128]; 
+        snprintf(temp, sizeof(temp),
+                 "\\\"%s\\\":{\\\"device\\\":\\\"%s\\\"\\,\\\"property\\\":\\\"%s\\\"\\,\\\"value\\\":\\\"%s\\\"}",
+                 config->product, config->device, config->property, config->value);
 
-    cJSON *property = cJSON_CreateString(mqttJsonConfig.property);
-    cJSON_AddItemToObject(root, "property", property);
+        if (i > 0)
+        {
+            len += snprintf(json_str + len, buf_size - len, "\\,"); 
+        }
+        len += snprintf(json_str + len, buf_size - len, "%s", temp);
 
-    cJSON *value = cJSON_CreateString(mqttJsonConfig.value);
-    cJSON_AddItemToObject(root, "value", value); */
+        if (len >= buf_size - 16)
+        { 
+            break;
+        }
+    }
 
-  /*   // 将 JSON 对象转换为字符串
-  cJSON_PrintPreallocated(root, json_str, 256, 0);
-   
-    // 释放 cJSON 对象
-    cJSON_Delete(root); */
-
-    snprintf(json_str, 256,
-             "{\\\"product\\\":\\\"%s\\\"\\,\\\"device\\\":\\\"%s\\\"\\,\\\"property\\\":\\\"%s\\\"\\,\\\"value\\\":\\\"%s\\\"}",
-             mqttJsonConfig.product, mqttJsonConfig.device, mqttJsonConfig.property, mqttJsonConfig.value);
+    snprintf(json_str + len, buf_size - len, "}");
 }

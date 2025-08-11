@@ -22,6 +22,7 @@
         <file>Resource/Picture/hallLighton.png</file>
         <file>Resource/Picture/indoorHumidity.png</file>
         <file>Resource/Picture/indoorTemperature.png</file>
+        <file>Resource/Picture/indoorLight.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>

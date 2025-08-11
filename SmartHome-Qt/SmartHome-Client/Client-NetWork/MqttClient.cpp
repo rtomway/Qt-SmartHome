@@ -166,7 +166,6 @@ void MqttClient::onMessageReceived(const QByteArray& message, const QMqttTopicNa
 	QString messageText = QString::fromUtf8(message);
 	if (topic.name() == "smartHome/data")
 	{
-		qDebug() << "接收到数据:" << doc;
 		emit MqttMessageReceived(messageText);
 	}
 
