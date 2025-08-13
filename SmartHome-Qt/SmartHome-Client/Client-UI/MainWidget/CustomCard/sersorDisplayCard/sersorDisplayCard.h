@@ -12,11 +12,12 @@ class SersorDisplayCard :public QWidget
 public:
 	SersorDisplayCard(QString sersorName, QPixmap sersorPixmap, QWidget* parent = nullptr);
 	~SersorDisplayCard();
-	void setSersorValue(const QString& value);
+	void updateSersorName(const QString& name);
+	void updateSersorValue(const QString& value);
+	void updateSersorPixmap(const QPixmap& pixmap);
 private:
 	void init();
 	void initUi();
-	void updateSersorValue(const QString& value);
 private:
 	QBoxLayout* m_layout;
 	QLabel* m_sersorNameLab;

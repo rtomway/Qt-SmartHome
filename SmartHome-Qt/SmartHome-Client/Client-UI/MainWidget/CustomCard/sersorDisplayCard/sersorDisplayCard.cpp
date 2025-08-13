@@ -1,5 +1,6 @@
 ﻿#include "sersorDisplayCard.h"
 #include "sersorDisplayCard.h"
+#include "sersorDisplayCard.h"
 
 
 SersorDisplayCard::SersorDisplayCard(QString sersorName, QPixmap sersorPixmap, QWidget* parent)
@@ -18,10 +19,11 @@ SersorDisplayCard::~SersorDisplayCard()
 
 }
 
-void SersorDisplayCard::setSersorValue(const QString& value)
+void SersorDisplayCard::updateSersorName(const QString& name)
 {
-	m_sersorValueLab->setText(value);
+	m_sersorNameLab->setText(name);
 }
+
 
 void SersorDisplayCard::init()
 {
@@ -69,4 +71,11 @@ void SersorDisplayCard::initUi()
 void SersorDisplayCard::updateSersorValue(const QString& value)
 {
 	m_sersorValueLab->setText(value);
+}
+
+//更改显示图片
+void SersorDisplayCard::updateSersorPixmap(const QPixmap& pixmap)
+{
+	m_sersorPixmap = pixmap.scaled(80, 80);
+	m_sersorPixLab->setPixmap(m_sersorPixmap);
 }

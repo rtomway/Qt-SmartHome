@@ -20,6 +20,7 @@ private:
 	void onBathRoomLightChange(bool state);
 	void onAllLightStateChanged(bool state);
 	void sendLightCmd(const QString& device, bool state);
+	void onUpdateIndoorTemp(const QString& value);
 private:
 	Ui::DevicePage* ui;
 	DeviceContralCard* m_hallLight;

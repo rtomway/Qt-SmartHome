@@ -11,5 +11,6 @@ void myAdc_data_public();
 
 extern uint16_t adc_buf[ADC_CHANNEL_COUNT];
 extern uint8_t adc_conv_complete_flag;
+extern uint8_t temp_abnormal_flag;
 
 #endif /* MYADC_H_ */

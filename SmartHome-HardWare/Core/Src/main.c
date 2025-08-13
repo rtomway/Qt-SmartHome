@@ -135,8 +135,7 @@ int main(void)
     while (1)
     {
     /* USER CODE END WHILE */
-    //指令接受和数据上传处理
-     EventHandle();
+    EventHandle();
     /* USER CODE BEGIN 3 */
     }
   /* USER CODE END 3 */
@@ -196,6 +195,14 @@ void EventHandle()
   {
     myAdc_data_public();
     timing_flag = 0;
+  }
+  //温度异常触发警报
+  if(temp_abnormal_flag==1)
+  {
+    HAL_GPIO_WritePin(BEEP_PORT_GPIO_Port, BEEP_PORT_Pin, GPIO_PIN_RESET);
+  }else
+  {
+    HAL_GPIO_WritePin(BEEP_PORT_GPIO_Port, BEEP_PORT_Pin, GPIO_PIN_SET);
   }
   //指令接收处理
   if(cmd_flag==1)

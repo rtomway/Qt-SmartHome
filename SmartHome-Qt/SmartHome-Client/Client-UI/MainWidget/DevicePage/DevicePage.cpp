@@ -8,6 +8,7 @@
 #include "PacketCreate.h"
 
 #define	LIGHT_COUNT 3
+#define INDOORTEMP_ABNORMAL 38
 
 DevicePage::DevicePage(QWidget* parent)
 	:QWidget(parent)
@@ -53,9 +54,9 @@ void DevicePage::init()
 	connect(m_bathroomLight, &DeviceContralCard::SwitchState, this, &DevicePage::onBathRoomLightChange);
 	connect(EventBus::instance(), &EventBus::allLightControl, this, &DevicePage::onAllLightStateChanged);
 
-	//温湿度显示
-	connect(EventBus::instance(), &EventBus::updateIndoorTemperature, m_indoorTempDispaly, &SersorDisplayCard::setSersorValue);
-	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_indoorLightDispaly, &SersorDisplayCard::setSersorValue);
+	//温度、光照
+	connect(EventBus::instance(), &EventBus::updateIndoorTemperature, this, &DevicePage::onUpdateIndoorTemp);
+	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_indoorLightDispaly, &SersorDisplayCard::updateSersorValue);
 }
 
 void DevicePage::onHallLightChange(bool state)
@@ -111,5 +112,22 @@ void DevicePage::sendLightCmd(const QString& device, bool state)
 		emit EventBus::instance()->allLightControl(false);
 	}
 
+}
+
+//更新温度显示（限制阈值）
+void DevicePage::onUpdateIndoorTemp(const QString& value)
+{
+	int tempValue = value.left(value.length() - 2).toFloat();
+	if (tempValue > INDOORTEMP_ABNORMAL)
+	{
+		m_indoorTempDispaly->updateSersorName("室内温度异常");
+		m_indoorTempDispaly->updateSersorPixmap(QPixmap(":/picture/Resource/Picture/indoorTempAbnormal.png"));
+	}
+	else
+	{
+		m_indoorTempDispaly->updateSersorName("室内温度");
+		m_indoorTempDispaly->updateSersorPixmap(QPixmap(":/picture/Resource/Picture/indoorTemperature.png"));
+	}
+	m_indoorTempDispaly->updateSersorValue(value);
 }
 

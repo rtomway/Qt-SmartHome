@@ -10,6 +10,6 @@ void SersorDataHandle::updateIndoorTemperature(const QJsonObject& paramsObj, con
 
 void SersorDataHandle::updateIndoorHumidity(const QJsonObject& paramsObj, const QByteArray& data)
 {
-	auto value = paramsObj["value"].toString() + QString("%");
+	auto value = paramsObj["value"].toString() + QString("lux");
 	EventBus::instance()->emit updateIndoorHumidity(value);
 }
