@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "dma.h"
 #include "i2c.h"
+#include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -37,6 +38,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "util/cmdMap.h"
 
 /* USER CODE END Includes */
 
@@ -108,16 +110,19 @@ int main(void)
   MX_USART1_UART_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   OLED_Init();
-  OLED_ShowString(0, 0, "Hiiii!");
-
-
+  OLED_ShowString(0, 0, "Hiiii!");                                                                                                                                                                                            
   esp8266_init();
   ReceiveData_idle_init();
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_TIM_Base_Start_IT(&htim3);
+  HAL_TIM_Base_Start(&htim2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+
+  MX_IWDG_Init();
 
   //myAdc_public_tempValue();
 
@@ -154,10 +159,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -209,7 +215,11 @@ void EventHandle()
   {
     execute_command(cmd_mqtt_config.product, cmd_mqtt_config.device, cmd_mqtt_config.property, cmd_mqtt_config.value);
     cmd_flag=0;
+    OLED_ShowString(2, 0, cmd_mqtt_config.value);
   }
+ // OLED_ShowNum(2, 0, __HAL_TIM_GetCompare(&htim2, TIM_CHANNEL_3), 6);
+  //喂狗
+  HAL_IWDG_Refresh(&hiwdg);
 }
 /* USER CODE END 4 */
 

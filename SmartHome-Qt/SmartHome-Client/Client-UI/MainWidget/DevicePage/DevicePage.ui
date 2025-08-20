@@ -65,8 +65,27 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QWidget" name="widget_7" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_7"/>
+         <widget class="QWidget" name="fanWidget" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_13"/>
+           </item>
+          </layout>
          </widget>
         </item>
         <item row="0" column="0">

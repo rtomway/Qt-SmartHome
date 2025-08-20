@@ -12,6 +12,13 @@ char esp8266_receive_data[ESP8266_BUFFER_SIZE] = {0};
 int esp8266_wifiState = 0;
 int esp8266_mqttState = 0;
 
+/**
+ * @brief esp8266初始化
+ * 
+ * @return HAL_StatusTypeDef 
+ * @author xu
+ * @date 2025-08-20
+ */
 HAL_StatusTypeDef esp8266_init(void)
 {
     //检查esp8266是否正常工作
@@ -198,11 +205,6 @@ HAL_StatusTypeDef esp8266_mqtt_connect(void)
         return HAL_ERROR;
     }
 
-    return HAL_OK;
-}
-
-HAL_StatusTypeDef esp8266_disconnect(void)
-{
     return HAL_OK;
 }
 

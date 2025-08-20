@@ -1,6 +1,4 @@
 ﻿#include "sersorDisplayCard.h"
-#include "sersorDisplayCard.h"
-#include "sersorDisplayCard.h"
 
 
 SersorDisplayCard::SersorDisplayCard(QString sersorName, QPixmap sersorPixmap, QWidget* parent)

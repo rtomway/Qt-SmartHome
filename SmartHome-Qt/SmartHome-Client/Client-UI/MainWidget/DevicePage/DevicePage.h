@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "CustomCard/deviceControlCard/deviceContralCard.h"
 #include "CustomCard/sersorDisplayCard/sersorDisplayCard.h"
+#include "CustomCard/fanDisplayCard/fanDisplayCard.h"
 
 namespace Ui { class DevicePage; }
 
@@ -21,14 +22,17 @@ private:
 	void onAllLightStateChanged(bool state);
 	void sendLightCmd(const QString& device, bool state);
 	void onUpdateIndoorTemp(const QString& value);
+	void onChangeFanSpeedCmd(const QString& speedMode);
 private:
 	Ui::DevicePage* ui;
 	DeviceContralCard* m_hallLight;
 	DeviceContralCard* m_bedroomLight;
 	DeviceContralCard* m_bathroomLight;
+	int m_lightCount = 0;
 	SersorDisplayCard* m_indoorTempDispaly;
 	SersorDisplayCard* m_indoorLightDispaly;
-	int m_lightCount = 0;
+	FanDisplayCard* m_fanCtlCard;
+	
 };
 
 #endif // !DEVICEPAGE_H_

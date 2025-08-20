@@ -57,6 +57,12 @@ void DevicePage::init()
 	//温度、光照
 	connect(EventBus::instance(), &EventBus::updateIndoorTemperature, this, &DevicePage::onUpdateIndoorTemp);
 	connect(EventBus::instance(), &EventBus::updateIndoorHumidity, m_indoorLightDispaly, &SersorDisplayCard::updateSersorValue);
+
+	//风扇控制
+	m_fanCtlCard = new FanDisplayCard(this);
+	ui->fanWidget->layout()->addWidget(m_fanCtlCard);
+
+	connect(m_fanCtlCard, &FanDisplayCard::changeFanSpeed, this, &DevicePage::onChangeFanSpeedCmd);
 }
 
 void DevicePage::onHallLightChange(bool state)
@@ -129,5 +135,20 @@ void DevicePage::onUpdateIndoorTemp(const QString& value)
 		m_indoorTempDispaly->updateSersorPixmap(QPixmap(":/picture/Resource/Picture/indoorTemperature.png"));
 	}
 	m_indoorTempDispaly->updateSersorValue(value);
+}
+
+//更改风扇风速
+void DevicePage::onChangeFanSpeedCmd(const QString& speedMode)
+{
+	auto topic = "smartHome/cmd";
+
+	MqttJsonConfig fanConfig;
+	fanConfig.product = "fan";
+	fanConfig.device = "fan";
+	fanConfig.property = "speedMode";
+	fanConfig.value = speedMode;
+	auto lightObj = PacketCreate::mqttJsonConfig(fanConfig);
+
+	NetWorkServiceLocator::instance()->publishCmd(topic, lightObj);
 }
 

@@ -38,7 +38,6 @@ HAL_StatusTypeDef esp8266_wifi_connect(void);
 HAL_StatusTypeDef esp8266_wifi_checkandReCon(void);
 HAL_StatusTypeDef esp8266_mqtt_connect(void);
 HAL_StatusTypeDef esp8266_mqtt_checkandReCon(void);
-HAL_StatusTypeDef esp8266_disconnect(void);
 
 
 void esp8266_init_subTopic(void);
