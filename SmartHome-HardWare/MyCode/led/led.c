@@ -6,29 +6,26 @@
 #include "esp8266/esp8266.h"
 #include "oled/oled.h"
 
-
-/**
- * @brief 灯光控制
- * 
- * @param led 
- * @param state 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：led_control
+ *  * 功能描述：灯光状态的控制
+ *  * 输入参数：led {type}
+ *  * 输入参数：state {type}
+ ***********************************************************************************************************************/
 void led_control(LED_Config led, GPIO_PinState state)
 {
     HAL_GPIO_WritePin(led.GPIO_Port, led.Pin, state);
 }
 
-/**
- * @brief 更新灯光状态
- * 
- * @param device 
- * @param property 
- * @param value 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：update_led_state
+ *  * 功能描述：更新灯光状态 接收灯光控制命令，并更新对应灯光状态
+ *  * 输入参数：device {type}
+ *  * 输入参数：property {type}
+ *  * 输入参数：value {type}
+ ***********************************************************************************************************************/
 void update_led_state(const char *device, const char *property, const char *value)
 {
     GPIO_PinState led_state;

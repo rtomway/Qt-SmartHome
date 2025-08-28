@@ -11,14 +11,14 @@
 #define UART_HANDLE &huart1
 
 uint8_t cmd_flag = 0;
-MqttJsonConfig cmd_mqtt_config={0};
+uint8_t pushData_result_flag = 0;
+MqttJsonConfig cmd_mqtt_config = {0};
 
-/**
- * @brief 开启串口空闲中断
- *
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：ReceiveData_idle_init
+ *  * 功能描述：空闲中断初始化函数
+ ***********************************************************************************************************************/
 void ReceiveData_idle_init()
 {
     __HAL_UART_CLEAR_IDLEFLAG(UART_HANDLE);
@@ -28,12 +28,12 @@ void ReceiveData_idle_init()
 
 }
 
-/**
- * @brief 串口空闲中断处理函数
- *
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：ReceiveData_idle_handler
+ *  * 功能描述：空闲中断处理函数    负责解析接收到的数据 存储相关指令信息
+ *  * 输入参数：Size {type}
+ ***********************************************************************************************************************/
 void ReceiveData_idle_handler(uint16_t Size)
 {
     if(cmd_flag==0)
@@ -44,14 +44,13 @@ void ReceiveData_idle_handler(uint16_t Size)
     }
 }
 
-/**
- * @brief 接收到数据回调函数
- *
- * @param huart
- * @param Size
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：HAL_UARTEx_RxEventCallback
+ *  * 功能描述：空闲中断回调函数
+ *  * 输入参数：huart {type}
+ *  * 输入参数：Size {type}
+ ***********************************************************************************************************************/
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
     if (huart->Instance == USART1)
@@ -64,11 +63,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         //at指令回复
         if (strstr((char *)esp8266_receive_data, "OK") != NULL)
         {
-            OLED_ShowString(1, 0, "public data OK");
+            pushData_result_flag = 0;
         }
         if (strstr((char *)esp8266_receive_data, "ERROR") != NULL)
         {
-            OLED_ShowString(1, 0, "public data ERROR");
+            pushData_result_flag = 1;
         }
         //订阅接收qt客户端指令
         if (strstr((char *)esp8266_receive_data, "MQTTSUBRECV") != NULL)

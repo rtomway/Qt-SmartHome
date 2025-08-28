@@ -11,9 +11,6 @@ typedef struct Key_TypeDef
 
 
 
-int key0_pressed();
-int key1_pressed();
-
 /**
  *  扫描按键，判断有无按键被按下
  * 如果有按键，则返回按键的值

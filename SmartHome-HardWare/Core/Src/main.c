@@ -114,8 +114,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   OLED_Init();
-  OLED_ShowString(0, 0, "Hiiii!");                                                                                                                                                                                            
-  esp8266_init();
+  OLED_ShowString(0, 0, "Hiiii!");
+  OLED_ShowString(1, 0, "Wait Connecting...");
+  if(esp8266_init()==HAL_OK)
+  OLED_Clear();
   ReceiveData_idle_init();
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_TIM_Base_Start_IT(&htim3);
@@ -124,14 +126,9 @@ int main(void)
 
   MX_IWDG_Init();
 
-  //myAdc_public_tempValue();
 
- /*  for (int i = 0;i<3;i++)
-  {
-    myAdc_public_tempValue();
-  } */
 
-    /* User code */
+  /* User code */
 
   /* USER CODE END 2 */
 
@@ -201,11 +198,24 @@ void EventHandle()
   {
     myAdc_data_public();
     timing_flag = 0;
+    OLED_ShowString(0, 0, "temp:");
+    OLED_ShowNum(0, 6,(uint8_t)temp_value,2);
+    OLED_ShowString(1, 0, "light:");
+    OLED_ShowNum(1, 7, (uint8_t)light_value, 2);
+  }
+  //数据发送
+  if (pushData_result_flag == 1)
+  {
+    OLED_ShowString(3, 0, "public data ERROR");
+  }else
+  {
+    OLED_ShowString(3, 0, "public data OK");
   }
   //温度异常触发警报
   if(temp_abnormal_flag==1)
   {
     HAL_GPIO_WritePin(BEEP_PORT_GPIO_Port, BEEP_PORT_Pin, GPIO_PIN_RESET);
+    OLED_ShowString(2, 0, "Temp Abnormal!");
   }else
   {
     HAL_GPIO_WritePin(BEEP_PORT_GPIO_Port, BEEP_PORT_Pin, GPIO_PIN_SET);
@@ -215,9 +225,11 @@ void EventHandle()
   {
     execute_command(cmd_mqtt_config.product, cmd_mqtt_config.device, cmd_mqtt_config.property, cmd_mqtt_config.value);
     cmd_flag=0;
-    OLED_ShowString(2, 0, cmd_mqtt_config.value);
+    OLED_Clear();
+    OLED_ShowString(2, 0,"Cmd:");
+    OLED_ShowString(2, 4, cmd_mqtt_config.device);
+    OLED_ShowString(2, 9, cmd_mqtt_config.value);
   }
- // OLED_ShowNum(2, 0, __HAL_TIM_GetCompare(&htim2, TIM_CHANNEL_3), 6);
   //喂狗
   HAL_IWDG_Refresh(&hiwdg);
 }

@@ -7,6 +7,7 @@
 
 //标志位
 extern uint8_t cmd_flag;
+extern uint8_t pushData_result_flag;
 
 //指令存储
 extern MqttJsonConfig cmd_mqtt_config;

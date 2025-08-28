@@ -12,13 +12,12 @@ char esp8266_receive_data[ESP8266_BUFFER_SIZE] = {0};
 int esp8266_wifiState = 0;
 int esp8266_mqttState = 0;
 
-/**
- * @brief esp8266初始化
- * 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-20
- */
+ *  * 函数名称：esp8266_init
+ *  * 功能描述：esp8266初始化
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_init(void)
 {
     //检查esp8266是否正常工作
@@ -46,13 +45,12 @@ HAL_StatusTypeDef esp8266_init(void)
     return HAL_OK;
 }
 
-/**
- * @brief 检查WiFi连接状态并尝试重新连接
- *
- * @return HAL_StatusTypeDef
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_wifi_checkandReCon
+ *  * 功能描述：wifi检查并尝试重新连接
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_wifi_checkandReCon(void)
 {
     int wifiConState = 0;
@@ -93,13 +91,12 @@ HAL_StatusTypeDef esp8266_wifi_checkandReCon(void)
     return HAL_OK;
 }
 
-/**
- * @brief 连接WiFi
- * 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_wifi_connect
+ *  * 功能描述：连接WiFi
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_wifi_connect(void)
 {
     //设置sta模式
@@ -125,13 +122,12 @@ HAL_StatusTypeDef esp8266_wifi_connect(void)
     return HAL_OK;
 }
 
-/**
- * @brief 检查MQTT连接状态并尝试重新连接
- * 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_mqtt_checkandReCon
+ *  * 功能描述：mqtt检查并尝试重新连接
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_mqtt_checkandReCon(void)
 {
     esp8266_init_atCmd("AT+MQTTCONN?");
@@ -161,13 +157,12 @@ HAL_StatusTypeDef esp8266_mqtt_checkandReCon(void)
     return HAL_ERROR;
 }
 
-/**
- * @brief 连接MQTT服务器
- * 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_mqtt_connect
+ *  * 功能描述：mqtt连接
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_mqtt_connect(void)
 {
     //设置MQTT用户参数
@@ -208,14 +203,13 @@ HAL_StatusTypeDef esp8266_mqtt_connect(void)
     return HAL_OK;
 }
 
-/**
- * @brief 发送AT命令并获取响应
- * 
- * @param data 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-08
- */
+ *  * 函数名称：esp8266_init_atCmd
+ *  * 功能描述：初始化esp8266的AT命令
+ *  * 输入参数：data {type}
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_init_atCmd(char *data)
 {
     memset(esp8266_receive_data, 0, ESP8266_BUFFER_SIZE);
@@ -224,16 +218,14 @@ HAL_StatusTypeDef esp8266_init_atCmd(char *data)
     return HAL_OK;
 }
 
-
-/**
- * @brief 订阅MQTT主题
- * 
- * @param topic 
- * @param qos 
- * @return HAL_StatusTypeDef 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_sub_topic
+ *  * 功能描述：订阅主题
+ *  * 输入参数：topic {type}
+ *  * 输入参数：qos {type}
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_sub_topic(char *topic, int qos)
 {
     char mqttSubTopic[200];
@@ -249,23 +241,26 @@ HAL_StatusTypeDef esp8266_sub_topic(char *topic, int qos)
     return HAL_OK;
 }
 
-/**
- * @brief 初始化订阅的主题
- * 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：esp8266_init_subTopic
+ *  * 功能描述：初始化订阅主题
+ ***********************************************************************************************************************/
 void esp8266_init_subTopic(void)
 {
     esp8266_sub_topic("smartHome/cmd", 0);
 }
 
-/**
- * @brief 数据发布
- * 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-08
- */
+ *  * 函数名称：esp8266_public_data
+ *  * 功能描述：数据发布
+ *  * 输入参数：topic {type}
+ *  * 输入参数：data {type}
+ *  * 输入参数：qos {type}
+ *  * 输入参数：retain {type}
+ *  * 返 回 值：HAL_StatusTypeDef
+ ***********************************************************************************************************************/
 HAL_StatusTypeDef esp8266_public_data(char *topic, char *data, int qos, int retain)
 {
     char mqttPubData[254];

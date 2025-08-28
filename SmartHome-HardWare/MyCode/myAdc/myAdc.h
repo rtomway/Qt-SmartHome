@@ -13,4 +13,7 @@ extern uint16_t adc_buf[ADC_CHANNEL_COUNT];
 extern uint8_t adc_conv_complete_flag;
 extern uint8_t temp_abnormal_flag;
 
+extern float temp_value;
+extern float light_value;
+
 #endif /* MYADC_H_ */

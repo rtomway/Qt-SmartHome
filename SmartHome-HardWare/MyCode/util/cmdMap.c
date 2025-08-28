@@ -8,16 +8,15 @@ static const CommandMap cmd_map[] = {
     {"fan", update_fan_state}
 };
 
-/**
- * @brief 查询命令并执行对应函数
- *
- * @param cmd
- * @param device
- * @param property
- * @param value
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-06
- */
+ *  * 函数名称：execute_command
+ *  * 功能描述：执行命令 根据接收到的命令字符串查找对应的处理函数并执行
+ *  * 输入参数：cmd {type}
+ *  * 输入参数：device {type}
+ *  * 输入参数：property {type}
+ *  * 输入参数：value {type}
+ ***********************************************************************************************************************/
 void execute_command(const char *cmd, const char *device, const char *property, const char *value)
 {
     for (int i = 0; i < sizeof(cmd_map) / sizeof(CommandMap); i++)

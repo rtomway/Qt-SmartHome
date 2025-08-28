@@ -3,27 +3,26 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "oled/oled.h"
-#include <math.h>
+#include "main.h"
 #include "util/mqttPacket.h"
 #include "esp8266/esp8266.h"
+#include "math.h"
 
-#define INDOORTEMP_ABNORMAL 38
+#define INDOORTEMP_ABNORMAL 33
 
-float adc_value;
 uint16_t adc_buf[ADC_CHANNEL_COUNT] = {0};
-float temp_value=0;
-float light_value=0;
-float smoke_value = 0;
 uint8_t adc_conv_complete_flag = 0;
 uint8_t temp_abnormal_flag = 0;
 
-/**
- * @brief 重写adc转换完成回调函数(定时器软件触发)
- *    
- * @param hadc 
+float temp_value=0;
+float light_value=0;
+
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-07-21
- */
+ *  * 函数名称：HAL_ADC_ConvCpltCallback
+ *  * 功能描述：adc转换完成回调函数 由定时器触发，负责温度和光照强度的计算并且修改相关标志位
+ *  * 输入参数：hadc {type}
+ ***********************************************************************************************************************/
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     if (hadc->Instance == ADC1)
@@ -49,14 +48,11 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   
 }
 
-
-/**
- * @brief 定时上传传感器数据
- * 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-11
- */
-
+ *  * 函数名称：myAdc_data_public
+ *  * 功能描述：adc
+ ***********************************************************************************************************************/
 void myAdc_data_public()
 {
     if(adc_conv_complete_flag==0)

@@ -1,6 +1,7 @@
 ﻿#include "NetWorkServiceLocator.h"
 
 std::atomic<NetWorkService*> NetWorkServiceLocator::m_instance{ nullptr };
+
 NetWorkService* NetWorkServiceLocator::instance()
 {
 	return m_instance.load(std::memory_order_acquire);
@@ -11,6 +12,6 @@ void NetWorkServiceLocator::setNetService(NetWorkService* service)
 {
 	if (service) 
 	{
-		delete m_instance.exchange(service, std::memory_order_release);
+		m_instance.store(service, std::memory_order_release);
 	}
 }

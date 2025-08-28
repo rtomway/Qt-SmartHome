@@ -7,8 +7,8 @@
 #include "EventBus.h"
 #include "PacketCreate.h"
 
-#define	LIGHT_COUNT 3
-#define INDOORTEMP_ABNORMAL 38
+constexpr auto LIGHT_COUNT = 3;
+constexpr auto INDOORTEMP_ABNORMAL = 30;
 
 DevicePage::DevicePage(QWidget* parent)
 	:QWidget(parent)
@@ -122,6 +122,7 @@ void DevicePage::sendLightCmd(const QString& device, bool state)
 
 //更新温度显示（限制阈值）
 void DevicePage::onUpdateIndoorTemp(const QString& value)
+
 {
 	int tempValue = value.left(value.length() - 2).toFloat();
 	if (tempValue > INDOORTEMP_ABNORMAL)
@@ -134,6 +135,7 @@ void DevicePage::onUpdateIndoorTemp(const QString& value)
 		m_indoorTempDispaly->updateSersorName("室内温度");
 		m_indoorTempDispaly->updateSersorPixmap(QPixmap(":/picture/Resource/Picture/indoorTemperature.png"));
 	}
+	m_indoorTempDispaly->update();
 	m_indoorTempDispaly->updateSersorValue(value);
 }
 

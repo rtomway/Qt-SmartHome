@@ -5,13 +5,14 @@
 #include <stdlib.h>
 #include "oled/oled.h"
 
-/**
- * @brief 解析JSON数据
- *
- * @return MqttJsonConfig
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-07
- */
+ *  * 函数名称：parseMqttJson
+ *  * 功能描述：解析MQTT接收到的json数据
+ *  * 输入参数：receive_data {type}
+ *  * 输入参数：Size {type}
+ *  * 返 回 值：MqttJsonConfig
+ ***********************************************************************************************************************/
 MqttJsonConfig parseMqttJson(char *receive_data,uint16_t Size)
 {
     char json_str[256];
@@ -48,17 +49,15 @@ MqttJsonConfig parseMqttJson(char *receive_data,uint16_t Size)
     return mqttJsonConfig;
 }
 
-
-/**
- * @brief 打包JSON数组数据
- * 
- * @param config_array 
- * @param count 
- * @param json_str 
- * @param buf_size 
+/***********************************************************************************************************************
  * @author xu
- * @date 2025-08-11
- */
+ *  * 函数名称：packetMqttJsonArray
+ *  * 功能描述：组装MQTT要发送的json数组数据
+ *  * 输入参数：config_array {type}
+ *  * 输入参数：count {type}
+ *  * 输入参数：json_str {type}
+ *  * 输入参数：buf_size {type}
+ ***********************************************************************************************************************/
 void packetMqttJsonArray(MqttJsonConfig *config_array, uint8_t count, char *json_str, uint16_t buf_size)
 {
     memset(json_str, 0, buf_size); 
