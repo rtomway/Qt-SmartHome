@@ -110,23 +110,28 @@ int main(void)
   MX_USART1_UART_Init();
   MX_ADC1_Init();
   MX_TIM3_Init();
+ 
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
+  //OLED初始化
   OLED_Init();
   OLED_ShowString(0, 0, "Hiiii!");
   OLED_ShowString(1, 0, "Wait Connecting...");
+  //网络初始化
   if(esp8266_init()==HAL_OK)
   OLED_Clear();
+  //串口空闲中断接收初始化
   ReceiveData_idle_init();
+  //定时器
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_TIM_Base_Start(&htim2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-
-  MX_IWDG_Init();
-
-
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+  //舵机初始化角度为0度
+  curtain_servo_init();
+  // MX_IWDG_Init();
 
   /* User code */
 
@@ -134,12 +139,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1)
-    {
-    /* USER CODE END WHILE */
+  while (1)
+  {
     EventHandle();
     /* USER CODE BEGIN 3 */
-    }
+  }
   /* USER CODE END 3 */
 }
 
@@ -225,10 +229,6 @@ void EventHandle()
   {
     execute_command(cmd_mqtt_config.product, cmd_mqtt_config.device, cmd_mqtt_config.property, cmd_mqtt_config.value);
     cmd_flag=0;
-    OLED_Clear();
-    OLED_ShowString(2, 0,"Cmd:");
-    OLED_ShowString(2, 4, cmd_mqtt_config.device);
-    OLED_ShowString(2, 9, cmd_mqtt_config.value);
   }
   //喂狗
   HAL_IWDG_Refresh(&hiwdg);

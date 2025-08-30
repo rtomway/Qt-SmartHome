@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("F:/Vcpkg/vcpkg-master/installed/x64-windows/include")
 
 #外部库(主cmake find 子模块无需find)
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets  Network Mqtt)
+find_package(Qt6 REQUIRED  Core Widgets  Network Mqtt)
 find_package(fmt REQUIRED)
 
 

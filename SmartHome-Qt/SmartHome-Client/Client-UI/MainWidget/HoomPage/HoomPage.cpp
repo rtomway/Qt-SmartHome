@@ -16,6 +16,7 @@ HoomPage::HoomPage(QWidget* parent)
 	, ui(new Ui::HoomPage)
 	, m_timer(new QTimer(this))
 	, m_weatherWidget(new WeatherWidget(this))
+	, m_curtainContralCard(new CurtainDisplayCard(this))
 {
 	ui->setupUi(this);
 	init();
@@ -68,6 +69,10 @@ void HoomPage::initUi()
 	m_lightContralCard->setSwitchState(true);
 	m_lightContralCard->setSwitchState(false);
 
+	ui->CurtainWidget->layout()->addWidget(m_curtainContralCard);
+
+	connect(m_curtainContralCard, &CurtainDisplayCard::curtainValueChange, this, &HoomPage::onCurtainChanged);
+
 }
 
 //更新当前时间
@@ -78,6 +83,20 @@ void HoomPage::onUpdateCurrentTime()
 	ui->dateLab->setText(time.toString("MM-dd"));
 	QLocale local("zh_CN");
 	ui->weekLab->setText(local.toString(time, "dddd"));
+}
+
+//窗帘控制
+void HoomPage::onCurtainChanged(int percentage)
+{
+	auto topic = "smartHome/cmd";
+	MqttJsonConfig allCurtainCfg;
+	allCurtainCfg.product = "curtain";
+	allCurtainCfg.device = "curtain";
+	allCurtainCfg.property = "position";
+	allCurtainCfg.value = QString::number(percentage);
+	QJsonObject curtainObj = PacketCreate::mqttJsonConfig(allCurtainCfg);
+
+	NetWorkServiceLocator::instance()->publishCmd(topic, curtainObj);
 }
 
 //所有灯光一键控制

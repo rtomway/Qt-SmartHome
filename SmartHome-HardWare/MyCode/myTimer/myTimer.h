@@ -27,12 +27,19 @@ static FAN_SPEED fan_speed_table[] =
 {
     {"off", FAN_OFF, 0},
     {"low", FAN_ON_LOW, 333},
-    {"medium", FAN_ON_MEDIUM, 666},
-    {"high", FAN_ON_HIGH, 999}
+    {"medium", FAN_ON_MEDIUM, 444},
+    {"high", FAN_ON_HIGH,555}
 };
 // 风扇控制
-void fan_control(uint8_t speed);
+void fan_control(uint16_t speed);
 // 风扇状态更新
 void update_fan_state(const char *device, const char *property, const char *value);
+
+
+//窗帘舵机
+void curtain_servo_init();
+static uint32_t angle_to_ccr(uint16_t angle);
+void curtain_servo_control(uint16_t position);
+void update_curtain_position(const char *device, const char *property, const char *value);
 
 #endif /* __MYTIMER_H__ */

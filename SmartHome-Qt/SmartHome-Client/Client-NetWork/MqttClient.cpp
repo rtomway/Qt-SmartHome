@@ -7,9 +7,10 @@
 
 MqttClient::MqttClient(QObject* parent)
 	: QObject(parent)
-	, m_mqttClient(new QMqttClient(this))
 {
 
+	m_mqttClient = nullptr;
+	m_mqttClient = new QMqttClient;
 }
 
 MqttClient::~MqttClient()

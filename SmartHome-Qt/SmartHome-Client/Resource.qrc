@@ -26,6 +26,7 @@
         <file>Resource/Picture/indoorTempAbnormal.png</file>
         <file>Resource/Picture/fan_off.png</file>
         <file>Resource/Picture/fan_on.png</file>
+        <file>Resource/Picture/curtain.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>Resource/StyleSheet/LoginWidget.css</file>

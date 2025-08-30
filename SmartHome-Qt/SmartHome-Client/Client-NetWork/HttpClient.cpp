@@ -148,19 +148,19 @@ void HttpClient::replyDataHandle(QNetworkReply* reply, HttpCallback callBack)
 		if (contentType.contains("application/json"))
 		{
 			//回调,主线程进行，GuI操作
-			QMetaObject::invokeMethod(QCoreApplication::instance(), [callBack, responseData]()
-				{
-					callBack(QJsonDocument::fromJson(responseData).object(), QByteArray());
-				});
+			//QMetaObject::invokeMethod(QCoreApplication::instance(), [callBack, responseData]()
+				//{
+			callBack(QJsonDocument::fromJson(responseData).object(), QByteArray());
+			//});
 			return;
 		}
 		//解析返回数据包
 		auto parsePacketList = PacketCreate::parseDataPackets(responseData);
 		//回调,主线程进行，GuI操作
-		QMetaObject::invokeMethod(QCoreApplication::instance(), [callBack, parsePacketList]()
-			{
-				callBack(parsePacketList.first().params, parsePacketList.first().data);
-			});
+		//QMetaObject::invokeMethod(QCoreApplication::instance(), [callBack, parsePacketList]()
+			//{
+		callBack(parsePacketList.first().params, parsePacketList.first().data);
+		//});
 		return;
 	}
 

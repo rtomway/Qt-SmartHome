@@ -6,6 +6,7 @@
 
 #include "CustomCard/WeatherWidget/WeatherWidget.h"
 #include "CustomCard/deviceControlCard/deviceContralCard.h"
+#include "CustomCard/curtainDisplayCard/curtainDisplayCard.h"
 
 namespace Ui { class HoomPage; }
 
@@ -23,11 +24,13 @@ private:
 	void onLightStateChanged(bool state);
 	void onAllLightStateChanged(bool state);
 	void onUpdateCurrentTime();
+	void onCurtainChanged(int percentage);
 private:
 	Ui::HoomPage* ui;
 	QTimer* m_timer;
 	WeatherWidget* m_weatherWidget;
 	DeviceContralCard* m_lightContralCard;
+	CurtainDisplayCard* m_curtainContralCard;
 };
 
 #endif // !HOOMPAGE_H_

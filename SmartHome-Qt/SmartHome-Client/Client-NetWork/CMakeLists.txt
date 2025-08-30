@@ -1,5 +1,8 @@
 ﻿# NetWork 模块的 CMake 配置
 
+
+find_package(Qt6 REQUIRED COMPONENTS Mqtt)
+
 # 创建一个静态库或者共享库
 add_library(Client-NetWork STATIC
          
@@ -10,6 +13,7 @@ add_library(Client-NetWork STATIC
      MqttClient.h      MqttClient.cpp
      MessageHandle.h      MessageHandle.cpp
 )
+
 
 # 设置包含目录（确保主程序能访问头文件）
 target_include_directories(Client-NetWork PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

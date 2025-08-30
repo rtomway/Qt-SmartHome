@@ -5,7 +5,8 @@
 //初始化命令映射表
 static const CommandMap cmd_map[] = {
     {"light", update_led_state},
-    {"fan", update_fan_state}
+    {"fan", update_fan_state},
+    {"curtain", update_curtain_position},
 };
 
 /***********************************************************************************************************************

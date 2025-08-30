@@ -8,7 +8,7 @@
 #include "esp8266/esp8266.h"
 #include "math.h"
 
-#define INDOORTEMP_ABNORMAL 33
+#define INDOORTEMP_ABNORMAL 30
 
 uint16_t adc_buf[ADC_CHANNEL_COUNT] = {0};
 uint8_t adc_conv_complete_flag = 0;
