@@ -55,4 +55,6 @@ void CurtainDisplayCard::initUi()
 		color:#0094ff;
 	}
 	)");
+
+	ui->percentLab->setText("窗帘:0%");
 }
