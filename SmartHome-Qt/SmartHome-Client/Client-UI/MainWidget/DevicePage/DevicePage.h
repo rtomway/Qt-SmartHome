@@ -23,6 +23,7 @@ private:
 	void sendLightCmd(const QString& device, bool state);
 	void onUpdateIndoorTemp(const QString& value);
 	void onChangeFanSpeedCmd(const QString& speedMode);
+	void postData();
 private:
 	Ui::DevicePage* ui;
 	DeviceContralCard* m_hallLight;

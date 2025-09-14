@@ -25,6 +25,7 @@ void MessageHandle::initHttpRequestHash()
 	httpRequestHash["/register"] = LoginHandle::handle_register;
 	httpRequestHash["/passwordChange"] = UserHandle::handle_passwordChange;
 	httpRequestHash["/updateUserAvatar"] = UserHandle::handle_updateUserAvatar;
+	httpRequestHash["/postData"] = UserHandle::handle_passwordChange;
 }
 
 //public操作

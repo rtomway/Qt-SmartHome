@@ -6,7 +6,7 @@
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
-extern uint8_t timing_flag;
+extern volatile uint8_t timing_flag;
 
 // 风扇状态
 typedef enum FAN_STATE

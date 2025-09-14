@@ -36,3 +36,13 @@ bool UserDBUtils::passwordChange(const QString& user_id, const QString& password
 	bindValues.append(user_id);
 	return query.executeNonQuery(queryStr, bindValues, queryPtr);
 }
+
+//更新数据
+bool UserDBUtils::insertData(int light, int temp, DataBaseQuery& query, std::shared_ptr<QSqlQuery> queryPtr)
+{
+	QString queryStr = QString("insert into data (light,temp)values(?,?)");
+	QVariantList bindValues;
+	bindValues.append(light);
+	bindValues.append(temp);
+	return query.executeNonQuery(queryStr, bindValues, queryPtr);
+}

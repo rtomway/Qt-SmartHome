@@ -15,6 +15,7 @@ public:
 	void updateSersorName(const QString& name);
 	void updateSersorValue(const QString& value);
 	void updateSersorPixmap(const QPixmap& pixmap);
+	int getSersorData();
 private:
 	void init();
 	void initUi();

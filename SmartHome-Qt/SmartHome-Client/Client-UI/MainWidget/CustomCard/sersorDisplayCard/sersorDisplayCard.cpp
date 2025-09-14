@@ -77,3 +77,9 @@ void SersorDisplayCard::updateSersorPixmap(const QPixmap& pixmap)
 	m_sersorPixmap = pixmap.scaled(80, 80);
 	m_sersorPixLab->setPixmap(m_sersorPixmap);
 }
+
+//获取数据
+int SersorDisplayCard::getSersorData()
+{
+	return m_sersorValueLab->text().left(2).toInt();
+}

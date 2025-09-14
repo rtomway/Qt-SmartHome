@@ -16,6 +16,7 @@ void HttpRouteManager::setupRoutes()
 	registerHttpRoute("/register");
 	registerHttpRoute("/updateUserAvatar");
 	registerHttpRoute("/passwordChange");
+	registerHttpRoute("/dataPost");
 }
 
 //请求分配处理

@@ -227,8 +227,13 @@ void EventHandle()
   //指令接收处理
   if(cmd_flag==1)
   {
-    execute_command(cmd_mqtt_config.product, cmd_mqtt_config.device, cmd_mqtt_config.property, cmd_mqtt_config.value);
-    cmd_flag=0;
+    execute_command(cmd_mqtt_config[read_cmd_index].product, cmd_mqtt_config[read_cmd_index].device,
+       cmd_mqtt_config[read_cmd_index].property, cmd_mqtt_config[read_cmd_index].value);
+    read_cmd_index = (read_cmd_index++) % CMD_MAX_NUM;
+    if(read_cmd_index==write_cmd_index)
+    {
+      cmd_flag = 0;
+    }
   }
   //喂狗
   HAL_IWDG_Refresh(&hiwdg);

@@ -11,8 +11,8 @@
 #define INDOORTEMP_ABNORMAL 30
 
 uint16_t adc_buf[ADC_CHANNEL_COUNT] = {0};
-uint8_t adc_conv_complete_flag = 0;
-uint8_t temp_abnormal_flag = 0;
+volatile uint8_t adc_conv_complete_flag = 0;
+volatile uint8_t temp_abnormal_flag = 0;
 
 float temp_value=0;
 float light_value=0;

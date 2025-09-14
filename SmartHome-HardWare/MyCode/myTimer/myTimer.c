@@ -11,9 +11,9 @@
 #define SERVO_MIN_ANGLE 0    
 #define SERVO_MAX_ANGLE 180  
 #define SERVO_MIN_PULSE 500  
-#define SERVO_MAX_PULSE 2500 
+#define SERVO_MAX_PULSE 2500
 
-uint8_t timing_flag = 0;
+uint8_t volatile timing_flag = 0;
 FAN_STATE fan_state = FAN_OFF;
 uint16_t current_angle = 0;
 

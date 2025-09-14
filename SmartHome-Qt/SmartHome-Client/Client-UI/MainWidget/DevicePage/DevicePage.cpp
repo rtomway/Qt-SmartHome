@@ -42,7 +42,7 @@ void DevicePage::init()
 	ui->bedroomLightControl->layout()->addWidget(m_bedroomLight);
 	ui->bathroomLightControl->layout()->addWidget(m_bathroomLight);
 
-	//温湿度
+	//温度
 	m_indoorTempDispaly = new SersorDisplayCard("室内温度", QPixmap(":/picture/Resource/Picture/indoorTemperature.png"), this);
 	ui->indoorTemperatureWidget->layout()->addWidget(m_indoorTempDispaly);
 	m_indoorLightDispaly = new SersorDisplayCard("室内光照", QPixmap(":/picture/Resource/Picture/indoorLight.png"), this);
@@ -137,6 +137,8 @@ void DevicePage::onUpdateIndoorTemp(const QString& value)
 	}
 	m_indoorTempDispaly->update();
 	m_indoorTempDispaly->updateSersorValue(value);
+
+	this->postData();
 }
 
 //更改风扇风速
@@ -152,5 +154,21 @@ void DevicePage::onChangeFanSpeedCmd(const QString& speedMode)
 	auto lightObj = PacketCreate::mqttJsonConfig(fanConfig);
 
 	NetWorkServiceLocator::instance()->publishCmd(topic, lightObj);
+}
+
+//数据上传
+void DevicePage::postData()
+{
+	int light= m_indoorLightDispaly->getSersorData();
+	int temp = m_indoorTempDispaly->getSersorData();
+
+	QJsonObject dataObj;
+	dataObj["temp"] = temp;
+	dataObj["light"] = light;
+
+	QJsonDocument dataDoc(dataObj);
+	auto data = dataDoc.toJson(QJsonDocument::Compact);
+
+	NetWorkServiceLocator::instance()->sendHttpPostRequest("/dataPost", data);
 }
 

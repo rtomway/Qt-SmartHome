@@ -77,3 +77,21 @@ void UserHandle::handle_updateUserAvatar(const QJsonObject& paramsObj, const QBy
 	QJsonDocument responsedoc(responseObj);
 	responder.write(responsedoc);
 }
+
+//数据上传
+void UserHandle::handle_dataPost(const QJsonObject& paramsObj, const QByteArray& data, QHttpServerResponder& responder)
+{
+	auto light = paramsObj["light"].toString().toInt();
+	auto temp = paramsObj["temp"].toString().toInt();
+	DataBaseQuery query;
+	if (!UserDBUtils::insertData(light, temp, query))
+	{
+
+	}
+	QJsonObject responseObj;
+	SResult::addSuccessCode(responseObj, SResultCode::SuccessButNotData);
+
+	QJsonDocument responsedoc(responseObj);
+	responder.write(responsedoc);
+
+}

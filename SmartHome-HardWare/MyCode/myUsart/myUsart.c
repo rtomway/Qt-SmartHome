@@ -10,9 +10,11 @@
 #define RECEIVE_BUFFER_SIZE 256
 #define UART_HANDLE &huart1
 
-uint8_t cmd_flag = 0;
+volatile uint8_t cmd_flag = 0;
+volatile uint8_t write_cmd_index = 0;
+uint8_t read_cmd_index=0;
 uint8_t pushData_result_flag = 0;
-MqttJsonConfig cmd_mqtt_config = {0};
+MqttJsonConfig cmd_mqtt_config[CMD_MAX_NUM] = {0};
 
 /***********************************************************************************************************************
  * @author xu
@@ -36,12 +38,10 @@ void ReceiveData_idle_init()
  ***********************************************************************************************************************/
 void ReceiveData_idle_handler(uint16_t Size)
 {
-    if(cmd_flag==0)
-    {
-        // 处理接收到的数据
-        cmd_mqtt_config = parseMqttJson(esp8266_receive_data, Size);
-        cmd_flag = 1;
-    }
+    // 处理接收到的数据
+    cmd_mqtt_config[write_cmd_index] = parseMqttJson(esp8266_receive_data, Size);
+    write_cmd_index = (write_cmd_index++) % CMD_MAX_NUM;
+    cmd_flag = 1;
 }
 
 /***********************************************************************************************************************
